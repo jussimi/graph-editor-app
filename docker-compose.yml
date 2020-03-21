@@ -6,15 +6,16 @@ services:
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_PASSWORD: postgres
+      - POSTGRES_PASSWORD
+    env_file: .env
   api:
     container_name: graph_editor_api
     build: ./api
     ports:
       - "3000:3000"
     environment:
-      DB_HOST: postgresql
-      PORT: 3000
+      PORT: $API_PORT
+    env_file: .env
     volumes:
       - ./api:/usr/src/app
   ui:
@@ -23,7 +24,8 @@ services:
     ports:
       - "4000:4000"
     environment:
-      HOST: 0.0.0.0
-      PORT: 4000
+      HOST: $UI_HOST
+      PORT: $UI_PORT
+    env_file: .env
     volumes:
       - ./ui:/usr/src/app

@@ -1,21 +1,23 @@
 import express from 'express';
 import postgraphile from 'postgraphile';
 
-const PORT = process.env.PORT;
-const DB_HOST = process.env.DB_HOST;
-const JWT_SECRET = 'my_super_secret_secret';
-const DB_PORT = '5432';
-const DB_NAME = 'testdb';
-const DB_USER = 'graph_editor_postgraphile';
-const DB_PASS = 'graph_editor_postgraphile_pass';
-const DB_SCHEMA = 'graph_editor';
+const {
+  PORT,
+  DB_HOST,
+  JWT_SECRET,
+  DB_PORT,
+  DB_NAME,
+  GRAPH_EDITOR_USER,
+  GRAPH_EDITOR_USER_PASS,
+  GRAPH_EDITOR_SCHEMA
+} = process.env;
 
-const CONNECTION_STRING = `postgres://${DB_USER}:${DB_PASS}@${DB_HOST}:${DB_PORT}/${DB_NAME}`;
+const CONNECTION_STRING = `postgres://${GRAPH_EDITOR_USER}:${GRAPH_EDITOR_USER_PASS}@${DB_HOST}:${DB_PORT}/${DB_NAME}`;
 
 const app = express();
 
 const postgraphileOptions = {
-  jwtPgTypeIdentifier: `${DB_SCHEMA}.auth_token`,
+  jwtPgTypeIdentifier: `${GRAPH_EDITOR_SCHEMA}.auth_token`,
   jwtSecret: JWT_SECRET,
   graphqlRoute: '/graphql',
   subscriptions: true,
@@ -23,7 +25,7 @@ const postgraphileOptions = {
   dynamicJson: true,
   setofFunctionsContainNulls: false,
   ignoreRBAC: false,
-  ignoreIndexes: false,
+  ignoreIndexes: true,
   showErrorStack: "json",
   extendedErrors: ["hint", "detail", "errcode"],
   // exportGqlSchemaPath: "schema.graphql",
@@ -45,7 +47,7 @@ const postgraphileOptions = {
 app.use(
   postgraphile(
     CONNECTION_STRING,
-    DB_SCHEMA,
+    GRAPH_EDITOR_SCHEMA,
     postgraphileOptions as any,
   )
 );
