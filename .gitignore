@@ -1,0 +1,8 @@
+# Editor directories and files
+.vscode
+
+# Nuxt
+.nuxt
+
+# Node.js
+node_modules
