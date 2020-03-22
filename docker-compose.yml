@@ -8,6 +8,8 @@ services:
     environment:
       - POSTGRES_PASSWORD
     env_file: .env
+    volumes:
+      - ./database/data:/tmp_data
   api:
     container_name: graph_editor_api
     build: ./api

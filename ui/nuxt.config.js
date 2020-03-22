@@ -34,13 +34,15 @@ export default {
   /*
    ** Nuxt.js dev-modules
    */
-  buildModules: ['@nuxt/typescript-build', '@nuxtjs/vuetify'],
+  buildModules: ['@nuxt/typescript-build', '@nuxtjs/vuetify', 'nuxt-typed-vuex'],
   /*
    ** Nuxt.js modules
    */
   modules: [
     // Doc: https://axios.nuxtjs.org/usage
-    '@nuxtjs/axios'
+    '@nuxtjs/axios',
+    //
+    'cookie-universal-nuxt'
   ],
   /*
    ** Axios module configuration
@@ -75,6 +77,9 @@ export default {
     /*
      ** You can extend webpack config here
      */
+    transpile: [
+      /typed-vuex/,
+    ],
     extend(config, ctx) {}
   }
 }
