@@ -56,9 +56,12 @@ CREATE POLICY ${GRAPH_EDITOR_SCHEMA}_person_all_access_to_person
 CREATE TABLE ${GRAPH_EDITOR_SCHEMA}.graph (
   id                   serial PRIMARY KEY,
   person_id            integer REFERENCES ${GRAPH_EDITOR_SCHEMA}.person(id) ON DELETE CASCADE NOT NULL,
-  data                 JSONB DEFAULT '{}' NOT NULL,
+  name                 text NOT NULL,
+  nodes                JSONB DEFAULT '[]' NOT NULL,
+  edges                JSONB DEFAULT '[]' NOT NULL,
   updated_at           timestamp DEFAULT NOW() NOT NULL,
-  created_at           timestamp DEFAULT NOW() NOT NULL
+  created_at           timestamp DEFAULT NOW() NOT NULL,
+  UNIQUE(person_id, name)
 );
 ALTER TABLE ${GRAPH_EDITOR_SCHEMA}.graph ENABLE ROW LEVEL SECURITY;
 ALTER SEQUENCE ${GRAPH_EDITOR_SCHEMA}.graph_id_seq RESTART WITH 111;
@@ -67,7 +70,11 @@ CREATE TRIGGER set_timestamp BEFORE UPDATE ON ${GRAPH_EDITOR_SCHEMA}.graph
 FOR EACH ROW EXECUTE PROCEDURE trigger_set_timestamp();
 
 GRANT USAGE, SELECT ON SEQUENCE ${GRAPH_EDITOR_SCHEMA}.graph_id_seq TO ${GRAPH_EDITOR_SCHEMA}_person;
-GRANT SELECT, INSERT(person_id, data), UPDATE(data), DELETE ON TABLE ${GRAPH_EDITOR_SCHEMA}.graph TO ${GRAPH_EDITOR_SCHEMA}_person;
+GRANT
+  SELECT,
+  INSERT(person_id, name, nodes, edges),
+  UPDATE(name, nodes, edges),
+  DELETE ON TABLE ${GRAPH_EDITOR_SCHEMA}.graph TO ${GRAPH_EDITOR_SCHEMA}_person;
 
 CREATE POLICY ${GRAPH_EDITOR_SCHEMA}_person_all_access_to_graph
   ON ${GRAPH_EDITOR_SCHEMA}.graph

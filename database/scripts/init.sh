@@ -12,13 +12,11 @@ psql testdb postgres <<-EOSQL
 EOSQL
 
 # Loop through all files in data (note that we have been given write access in Dockerfile)
-FILES=/data/*
+FILES=/tmp_data/*
 for file in $FILES
 do
-  # create temp-file that has correct env-variables substituted
   f=`basename $file`
-  envsubst < "$file" > "data/tmp_$f"
+  envsubst < "$file" > "data/$f"
   # migrate each file
-  psql testdb testuser -f "data/tmp_$f"
-  rm "data/tmp_$f"
+  psql testdb testuser -f "data/$f"
 done
