@@ -1,0 +1,3 @@
+[submodule "ui/graph-editor"]
+	path = ui/graph-editor
+	url = gitlab@gitlab.utu.fi:jamaik/graph-editor.git
