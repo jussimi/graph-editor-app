@@ -53,11 +53,11 @@
 
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
-import { Node, Edge, EditorConfig, EditorState, EditorActions } from '../../typescript';
 
 // Components
 import GraphEdge from './GraphEdge.vue';
 import GraphNode from './GraphNode.vue';
+import { Node, Edge, EditorConfig, EditorState, EditorActions } from '@/types';
 
 interface Position {
   x1: number;

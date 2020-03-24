@@ -8,6 +8,7 @@ export interface GraphData {
   name: string;
   edges: EdgeData[];
   nodes: NodeData[];
+  isTemp?: boolean;
 }
 
 export class Graph implements GraphData {
@@ -15,13 +16,17 @@ export class Graph implements GraphData {
   name: string;
   edges: Edge[];
   nodes: Node[];
+  isTemp?: boolean; // Saved in database
 
   constructor(data: Partial<GraphData> = {}) {
-    const { id = 1, name, edges = [], nodes = [] } = data;
+    const { id = 1, name, edges = [], nodes = [], isTemp } = data;
     this.id = id;
     this.name = name || `Graph-${this.id}`;
     this.edges = edges.map(edge => new Edge(edge));
     this.nodes = nodes.map(node => new Node(node));
+    if (isTemp) {
+      this.isTemp = isTemp;
+    }
   }
 
   get nextEdgeId(): number {

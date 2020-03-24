@@ -1,6 +1,5 @@
 <template>
-  <v-app-bar app dense>
-    <slot></slot>
+  <v-toolbar dense>
     <v-toolbar-title>{{ name }} </v-toolbar-title>
 
     <v-divider vertical class="mx-4"></v-divider>
@@ -14,15 +13,15 @@
     <v-divider vertical class="mx-4"></v-divider>
 
     <v-btn-toggle v-model="actionButton" dense @change="resetActiveButton">
-      <v-btn v-for="(name, action) of actionButtons" :key="action" @click="doAction(action)">
-        {{ name }}
+      <v-btn v-for="(btn, idx) of actionButtons" :key="idx" :disabled="btn.disabled" @click="doAction(btn.action)">
+        {{ btn.label }}
       </v-btn>
     </v-btn-toggle>
 
     <v-spacer></v-spacer>
 
     <template v-slot:extension align>
-      <v-row align="center" class="mx-6">
+      <v-row align="center">
         <template v-if="config.mode === 'node'">
           <TextInput :value="config.radius" class="t-input mx-3" type="number" @input="setConfig({ radius: $event })" />
           <ColorInput :value="config.fill" class="mx-3" @input="setConfig({ fill: $event })" />
@@ -70,7 +69,7 @@
             <v-icon>mdi-delete</v-icon>
           </v-btn>
         </template>
-        <template v-else>
+        <template v-else-if="!isTrial">
           <TextInput
             :value="name"
             class="mx-3"
@@ -82,17 +81,18 @@
             <v-icon>mdi-delete</v-icon>
           </v-btn>
         </template>
+        <div v-else class="mx-2">Login or register to save and download graphs</div>
       </v-row>
     </template>
-  </v-app-bar>
+  </v-toolbar>
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import { EditorConfig, EditorState, Node, Edge, EditorActions } from '../../typescript';
 
 import ColorInput from './ColorInput.vue';
 import TextInput from './TextInput.vue';
+import { EditorConfig, EditorState, Node, Edge, EditorActions } from '@/types';
 
 @Component({
   components: {
@@ -101,6 +101,7 @@ import TextInput from './TextInput.vue';
   }
 })
 export default class GraphToolbar extends Vue {
+  @Prop({ type: Boolean, required: true }) isTrial!: boolean;
   @Prop({ type: String, required: true }) name!: string;
   @Prop({ type: Object, required: true }) actions!: EditorActions;
   @Prop({ type: Object, required: true }) state!: EditorState;
@@ -108,7 +109,13 @@ export default class GraphToolbar extends Vue {
 
   modeButtons = ['edit', 'node', 'edge'];
 
-  actionButtons = { setLayout: 'normalize', doSave: 'save', downloadSvg: 'download' };
+  get actionButtons() {
+    return [
+      { action: 'setLayout', label: 'normalize', disabled: false },
+      { action: 'doSave', label: 'save', disabled: this.isTrial },
+      { action: 'downloadSvg', label: 'download', disabled: this.isTrial }
+    ];
+  }
 
   get selectedNode(): Node | undefined {
     const { type, value } = this.state.selected;

@@ -2,6 +2,7 @@
 
 export default {
   mode: 'universal',
+
   /*
    ** Headers of the page
    */
@@ -40,7 +41,7 @@ export default {
    */
   modules: [
     // Doc: https://axios.nuxtjs.org/usage
-    '@nuxtjs/axios',
+    ['@nuxtjs/axios', { proxy: false, baseUrl: 'http://0.0.0.0:4000' }],
     //
     'cookie-universal-nuxt'
   ],
@@ -48,7 +49,7 @@ export default {
    ** Axios module configuration
    ** See https://axios.nuxtjs.org/options
    */
-  axios: {},
+  // axios: {},
   /*
    ** vuetify module configuration
    ** https://github.com/nuxt-community/vuetify-module

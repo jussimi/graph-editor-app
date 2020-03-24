@@ -9,7 +9,7 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 
-import GraphEditorContainer from '../components/GraphContainer.vue';
+import GraphEditorContainer from '@/components/GraphContainer.vue';
 
 @Component({
   components: {
