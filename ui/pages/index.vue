@@ -1,9 +1,20 @@
 <template>
-  <v-layout column justify-center align-center>
-    <v-flex xs12 sm8 md6> </v-flex>
+  <v-layout>
+    <v-flex class="text-center">
+      <GraphEditorContainer />
+    </v-flex>
   </v-layout>
 </template>
 
-<script>
-export default {};
+<script lang="ts">
+import { Component, Vue } from 'vue-property-decorator';
+
+import GraphEditorContainer from '@/components/GraphContainer.vue';
+
+@Component({
+  components: {
+    GraphEditorContainer
+  }
+})
+export default class IndexPage extends Vue {}
 </script>

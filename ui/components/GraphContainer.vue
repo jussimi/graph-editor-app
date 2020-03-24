@@ -1,50 +1,19 @@
 <template>
   <div>
-    <v-navigation-drawer v-model="drawer" app>
-      <v-list dense>
-        <v-list-item>
-          <v-list-item-action>
-            <v-icon>mdi-home</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>Home</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-        <v-list-item>
-          <v-list-item-action>
-            <v-icon>mdi-mail</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>Contact</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-      </v-list>
-    </v-navigation-drawer>
-
-    <GraphToolbar v-bind="{ name: graph.name, config, state, actions }">
-      <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-    </GraphToolbar>
-
-    <v-content>
-      <v-container>
-        <div :class="`elevation-${2}`" class="mx-auto pa-1 transition-swing">
-          <GraphCanvas ref="graphCanvas" v-bind="{ nodes: graph.nodes, edges: graph.edges, config, state, actions }" />
-        </div>
-      </v-container>
-    </v-content>
-    <v-footer color="indigo" app>
-      <span class="white--text">&copy; 2019</span>
-    </v-footer>
+    <GraphToolbar v-bind="{ name: graph.name, config, state, actions, isTrial }" />
+    <div :class="`elevation-${2}`" class="mx-auto pa-1 transition-swing">
+      <GraphCanvas ref="graphCanvas" v-bind="{ nodes: graph.nodes, edges: graph.edges, config, state, actions }" />
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-property-decorator';
-import { Graph, Node, Edge, EditorConfig, EditorState, GraphData, Selected, EditorActions } from '../typescript';
 
 // Components
 import GraphToolbar from './toolbar/GraphToolbar.vue';
 import GraphCanvas from './canvas/GraphCanvas.vue';
+import { Graph, Node, Edge, EditorConfig, EditorState, Selected, EditorActions } from '@/types';
 
 const emptyGraph = () => new Graph({ id: 1111111111 });
 // Graph.nextId = 1;
@@ -59,7 +28,6 @@ const emptyGraph = () => new Graph({ id: 1111111111 });
 })
 export default class GraphContainer extends Vue {
   drawer = false;
-  graphs: GraphData[] = [new Graph({ id: 1 })];
 
   graph: Graph = emptyGraph();
 
@@ -93,6 +61,14 @@ export default class GraphContainer extends Vue {
 
   get disabled(): boolean {
     return !this.graph;
+  }
+
+  get isTrial(): boolean {
+    return !this.isLoggedIn && !this.$route.params.graphId;
+  }
+
+  get isLoggedIn(): boolean {
+    return this.$accessor.loggedIn;
   }
 
   get actions(): EditorActions {
@@ -189,12 +165,21 @@ export default class GraphContainer extends Vue {
   // }
 
   created() {
-    const graphId = Number.parseInt(this.$route.params.graphId, 10);
-    const graphById = this.graphs.find(g => g.id === graphId);
-    if (graphById) {
-      this.graph = new Graph(graphById);
+    if (!this.isLoggedIn) {
+      this.graph = new Graph({ id: 1, name: 'Trial Graph', isTemp: true });
     } else {
-      this.$router.push('/');
+      const graphId = Number.parseInt(this.$route.params.graphId, 10);
+      const graphById = this.$accessor.graphs.find(g => g.id === graphId);
+      if (graphById) {
+        this.graph = new Graph(graphById);
+      } else if (this.$accessor.graphs[0]) {
+        const firstGraph = this.$accessor.graphs[0];
+        this.$router.push(`/graphs/${firstGraph.id}`);
+      } else {
+        const newGraph = new Graph({ id: 1, name: 'New Graph', isTemp: true });
+        this.$accessor.setGraphs([newGraph]);
+        this.$router.push(`/graphs/${newGraph.id}`);
+      }
     }
   }
 
