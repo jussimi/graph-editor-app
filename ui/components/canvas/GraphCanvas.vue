@@ -52,7 +52,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
+import { Component, Prop, Vue, Watch } from 'nuxt-property-decorator';
 
 // Components
 import GraphEdge from './GraphEdge.vue';
