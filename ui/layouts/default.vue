@@ -28,6 +28,9 @@
         <v-btn @click="openModal('login')">Login</v-btn>
         <v-btn @click="openModal('register')">Register</v-btn>
       </template>
+      <template v-else>
+        <v-btn @click="logout">Logout</v-btn>
+      </template>
     </v-app-bar>
     <v-content>
       <v-container fill-height>
@@ -42,7 +45,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+import { Component, Vue } from 'nuxt-property-decorator';
 
 import LoginAndRegisterForm from '../components/LoginAndRegisterForm.vue';
 
@@ -69,6 +72,12 @@ export default class DefaultLayout extends Vue {
 
   get loggedIn(): boolean {
     return this.$accessor.loggedIn;
+  }
+
+  logout() {
+    if (this.loggedIn) {
+      this.$accessor.logout(undefined);
+    }
   }
 }
 </script>

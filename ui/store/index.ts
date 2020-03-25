@@ -1,7 +1,7 @@
 import { getAccessorType, mutationTree, actionTree } from 'nuxt-typed-vuex';
 import { Context } from '@nuxt/types';
 // import { NuxtAxiosInstance } from '@nuxtjs/axios';
-import { fetchAllResources, registerPerson, loginPerson } from '../queries';
+import { fetchAllResources, registerPerson, loginPerson } from '../store-helpers/queries';
 import { Graph } from '@/types';
 
 export const state = () => ({
@@ -49,6 +49,16 @@ export const actions = actionTree(
 
     async nuxtServerInit(_vuexContext, _nuxtContext: Context) {
       // console.log(nuxtContext.req);
+    },
+
+    logout({ state }) {
+      if (state.loggedIn) {
+        this.app.$accessor.setEmail('');
+        this.app.$accessor.setGraphs([]);
+        this.app.$accessor.setLoggedIn(false);
+        this.app.$cookies.remove('authToken');
+        this.$router.push('/');
+      }
     },
 
     async fetchData() {
