@@ -116,14 +116,18 @@ BEGIN
   FROM ${GRAPH_EDITOR_SCHEMA}_private.person_account a, ${GRAPH_EDITOR_SCHEMA}.person p
   WHERE p.email = $1 AND a.person_id = p.id;
 
-  IF account.password_hash = crypt($2, account.password_hash) THEN
+  IF (account.person_id IS NULL) THEN
+    RAISE EXCEPTION 'person-not-found';
+  END IF;
+
+  IF (account.password_hash = crypt($2, account.password_hash)) THEN
     RETURN (
       '${GRAPH_EDITOR_SCHEMA}_person',
       account.person_id,
       EXTRACT(epoch FROM (NOW() + interval '2 days'))
     )::${GRAPH_EDITOR_SCHEMA}.auth_token;
   ELSE
-    RETURN NULL;
+    RAISE EXCEPTION 'wrong-password';
   END IF;
 END;
 $$ language plpgsql strict security definer;
@@ -157,25 +161,32 @@ GRANT EXECUTE ON FUNCTION ${GRAPH_EDITOR_SCHEMA}.register_person(text, text) TO 
 
 
 CREATE FUNCTION ${GRAPH_EDITOR_SCHEMA}.remove_person(
-  email text
+  email text,
+  password text
 ) RETURNS BOOLEAN AS $$
 DECLARE
   person_id_from_jwt integer := current_setting('jwt.claims.person_id')::int;
-  person ${GRAPH_EDITOR_SCHEMA}.person;
+  account ${GRAPH_EDITOR_SCHEMA}_private.person_account;
 BEGIN
-  SELECT p.* INTO person FROM ${GRAPH_EDITOR_SCHEMA}.person p WHERE p.email = $1;
+  SELECT a.* INTO account
+  FROM ${GRAPH_EDITOR_SCHEMA}.account a, ${GRAPH_EDITOR_SCHEMA}.person p
+  WHERE p.email = $1 AND p.id = a.person_id;
 
-  IF (person.id != person_id_from_jwt) THEN
+  IF (account.person_id != person_id_from_jwt) THEN
     RAISE EXCEPTION 'unauthorized';
   END IF;
-  
-  DELETE FROM ${GRAPH_EDITOR_SCHEMA}.person WHERE id = person.id;
+
+  IF (account.password_hash = crypt($2, account.password_hash)) THEN
+    DELETE FROM ${GRAPH_EDITOR_SCHEMA}.person WHERE id = account.person_id;
+  ELSE
+    RAISE EXCEPTION 'wrong-password';
+  END IF;
 
   RETURN true;
 END;
 $$ language plpgsql strict security definer;
 
-GRANT EXECUTE ON FUNCTION ${GRAPH_EDITOR_SCHEMA}.remove_person(text) TO ${GRAPH_EDITOR_SCHEMA}_person;
+GRANT EXECUTE ON FUNCTION ${GRAPH_EDITOR_SCHEMA}.remove_person(text, text) TO ${GRAPH_EDITOR_SCHEMA}_person;
 
 
 COMMIT;
