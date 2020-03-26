@@ -1,8 +1,8 @@
 import { getAccessorType, mutationTree, actionTree } from 'nuxt-typed-vuex';
 import { Context } from '@nuxt/types';
 // import { NuxtAxiosInstance } from '@nuxtjs/axios';
-import { fetchAllResources, registerPerson, loginPerson } from '../store-helpers/queries';
-import { Graph } from '@/types';
+import { queries } from '@/store-helpers/queries';
+import { Graph, GraphData } from '@/types';
 
 export const state = () => ({
   personId: 0,
@@ -31,8 +31,24 @@ export const mutations = mutationTree(state, {
     state.loggedIn = newValue;
   },
 
-  setGraphs(state, newGraphs: Graph[]) {
+  setGraphs(state, newGraphs: (Graph | GraphData)[]) {
     state.graphs = newGraphs.map(g => new Graph(g));
+  },
+
+  upsertGraph(state, graph: Graph | GraphData) {
+    const { graphs } = state;
+    // If graph exists, do update.
+    if (graphs.find(g => g.id === graph.id)) {
+      state.graphs = graphs.map(g => (g.id === graph.id ? new Graph(graph) : g));
+    }
+    // Else insert
+    else {
+      state.graphs = [...graphs, new Graph(graph)];
+    }
+  },
+
+  removeGraph(state, graphToRemove: Graph | GraphData) {
+    state.graphs = state.graphs.filter(g => g.id !== graphToRemove.id);
   },
 
   initialiseStore() {
@@ -61,11 +77,49 @@ export const actions = actionTree(
       }
     },
 
-    async fetchData() {
-      const { data, error } = await fetchAllResources(this.app);
+    async register(_vuexContext, { email, password }: { email: string; password: string }): Promise<boolean> {
+      const { data, error } = await queries.registerPerson(this.app, email, password);
       if (error) {
         console.log(error);
-      } else if (data) {
+      } else if (data?.authToken) {
+        const { authToken } = data;
+        this.app.$cookies.set('authToken', authToken);
+        await this.app.$accessor.fetchData(undefined);
+        this.$router.push('/graphs');
+        return true;
+      }
+      return false;
+    },
+
+    async unRegister(_vuexContext, { email, password }: { email: string; password: string }): Promise<boolean> {
+      const { data, error } = await queries.removePerson(this.app, email, password);
+      if (error) {
+        console.log(error);
+      } else if (data?.success) {
+        this.app.$accessor.logout(undefined);
+      }
+      return false;
+    },
+
+    async login(_vuexContext, { email, password }: { email: string; password: string }): Promise<boolean> {
+      const { data, error } = await queries.loginPerson(this.app, email, password);
+      if (error) {
+        console.log(error);
+      } else if (data?.authToken) {
+        const { authToken } = data;
+        this.app.$cookies.set('authToken', authToken);
+        await this.app.$accessor.fetchData(undefined);
+        this.$router.push('/graphs');
+        return true;
+      }
+      return false;
+    },
+
+    async fetchData() {
+      const { data, error } = await queries.fetchAllResources(this.app);
+      if (error) {
+        console.log(error);
+      } else if (data?.personId) {
         const { personId, email, graphs } = data;
         this.app.$accessor.setLoggedIn(true);
         this.app.$accessor.setPersonId(personId);
@@ -74,26 +128,38 @@ export const actions = actionTree(
       }
     },
 
-    async register(_vuexContext, { email, password }: { email: string; password: string }) {
-      const { data, error } = await registerPerson(this.app, email, password);
+    async createGraph({ state }, graph: Graph) {
+      const { personId } = state;
+      const { data, error } = await queries.createGraph(this.app, personId, graph);
       if (error) {
         console.log(error);
       } else if (data) {
-        const { authToken } = data;
-        this.app.$cookies.set('authToken', authToken);
-        await this.app.$accessor.fetchData(undefined);
-        this.$router.push('/graphs');
+        // Remove temporary graph from store and add the new graph from database.
+        this.app.$accessor.removeGraph(graph);
+        this.app.$accessor.upsertGraph(data.graph);
+        // Set route to the new graph.
+        this.$router.push(`/graphs/${data.graph.id}`);
       }
     },
 
-    async login(_vuexContext, { email, password }: { email: string; password: string }) {
-      const { data, error } = await loginPerson(this.app, email, password);
+    async updateGraph(_vuexContext, graph: Graph) {
+      const { data, error } = await queries.updateGraph(this.app, graph);
       if (error) {
         console.log(error);
       } else if (data) {
-        const { authToken } = data;
-        this.app.$cookies.set('authToken', authToken);
-        await this.app.$accessor.fetchData(undefined);
+        // Set updated graph to store.
+        this.app.$accessor.upsertGraph(data.graph);
+      }
+    },
+
+    async deleteGraph(_vuexContext, graph: Graph) {
+      const { data, error } = await queries.deleteGraph(this.app, graph);
+      if (error) {
+        console.log(error);
+      } else if (data?.success) {
+        // Set updated graph to store and set route to /graphs.
+        // The middleware will then redirect to an existing graph or create a new temporary graph
+        this.app.$accessor.removeGraph(graph);
         this.$router.push('/graphs');
       }
     }

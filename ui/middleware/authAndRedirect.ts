@@ -7,22 +7,36 @@ const authMiddleware = async (context: Context) => {
   if (authToken) {
     if (!isLoggedIn) {
       await context.app.$accessor.fetchData(undefined);
+    }
+    // Check if the initial fetch went through -> logged in should be set as true.
+    if (context.app.$accessor.loggedIn) {
+      const graphIdFromRoute = Number.parseInt(context.route.params.graphId, 10);
       const graphs = context.app.$accessor.graphs;
-      if (graphs[0]) {
-        return context.redirect(`/graphs/${graphs[0].id}`);
+      if (!graphs.find(g => g.id === graphIdFromRoute)) {
+        console.log('graph not found');
+        if (graphs[0]) {
+          console.log('REDIRECT: logged in and has graphs');
+          return context.redirect(`/graphs/${graphs[0].id}`);
+        } else {
+          console.log('REDIRECT: logged in and does not have graphs');
+          const newGraph = new Graph({ id: 1, name: 'New-Graph', isTemp: true });
+          context.app.$accessor.setGraphs([newGraph]);
+          return context.redirect(`/graphs/${newGraph.id}`);
+        }
       } else {
-        const newGraph = new Graph({ id: 1, name: 'New Graph', isTemp: true });
-        context.app.$accessor.setGraphs([newGraph]);
-        return context.redirect(`/graphs/${newGraph.id}`);
+        console.log('Graph found, proceed!');
+        return;
       }
     } else {
-      // Do nothing
+      // Remove the authToken since it didn't work.
+      context.app.$cookies.remove('authToken');
     }
-  } else {
-    const newGraph = new Graph({ id: 1, name: 'Trial Graph', isTemp: true });
-    context.app.$accessor.setGraphs([newGraph]);
-    return context.redirect(`/graphs/${newGraph.id}`);
   }
+  // Not logged in.
+  console.log('REDIRECT: not logged in');
+  const newGraph = new Graph({ id: 1, name: 'Trial-Graph', isTemp: true });
+  context.app.$accessor.setGraphs([newGraph]);
+  return context.redirect(`/graphs/${newGraph.id}`);
 };
 
 export default authMiddleware;

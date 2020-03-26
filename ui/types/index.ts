@@ -42,4 +42,5 @@ export interface EditorActions {
   setLayout: (type?: string) => void;
   downloadSvg: () => void;
   doSave: () => void;
+  doDelete: () => void;
 }

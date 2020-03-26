@@ -1,25 +1,40 @@
 <template>
   <v-app id="inspire">
     <v-navigation-drawer :value="drawer" app>
-      <v-list dense>
+      <v-list>
         <v-list-item>
-          <v-list-item-action>
+          <v-list-item-icon>
             <v-icon>mdi-home</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>Home</v-list-item-title>
-          </v-list-item-content>
+          </v-list-item-icon>
+          <v-list-item-title>Home</v-list-item-title>
         </v-list-item>
-        <v-list-item>
-          <v-list-item-action>
-            <v-icon>mdi-mail</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>Contact</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
+
+        <v-list-group value="true">
+          <template v-slot:activator>
+            <v-list-item-title>Graphs</v-list-item-title>
+          </template>
+
+          <v-list-item v-for="graph in graphs" :key="graph.id" link>
+            <v-list-item-title>{{ graph.name }}</v-list-item-title>
+          </v-list-item>
+          <v-list-group sub-group no-action>
+            <template v-slot:activator>
+              <v-list-item-content>
+                <v-list-item-title>Actions</v-list-item-title>
+              </v-list-item-content>
+            </template>
+            <v-list-item v-for="(crud, i) in cruds" :key="i">
+              <v-list-item-title v-text="crud[0]"></v-list-item-title>
+              <v-list-item-action>
+                <v-icon v-text="`mdi-${crud[1]}`"></v-icon>
+              </v-list-item-action>
+            </v-list-item>
+          </v-list-group>
+        </v-list-group>
       </v-list>
     </v-navigation-drawer>
+
+    <!-- -->
     <v-app-bar app color="indigo" dark>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
       <v-toolbar-title>Application</v-toolbar-title>
@@ -32,6 +47,8 @@
         <v-btn @click="logout">Logout</v-btn>
       </template>
     </v-app-bar>
+
+    <!-- -->
     <v-content>
       <v-container fill-height>
         <nuxt />
@@ -48,6 +65,7 @@
 import { Component, Vue } from 'nuxt-property-decorator';
 
 import LoginAndRegisterForm from '../components/LoginAndRegisterForm.vue';
+import { Graph } from '../types';
 
 @Component({
   components: {
@@ -63,11 +81,22 @@ export default class DefaultLayout extends Vue {
     open: false
   };
 
+  cruds = [
+    ['Create', 'add'],
+    ['Read', 'insert_drive_file'],
+    ['Update', 'update'],
+    ['Delete', 'delete']
+  ];
+
   openModal(type: string) {
     this.loginModal = {
       open: true,
       type
     };
+  }
+
+  get graphs(): Graph[] {
+    return this.$accessor.graphs;
   }
 
   get loggedIn(): boolean {

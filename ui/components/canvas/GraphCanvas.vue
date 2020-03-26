@@ -276,6 +276,7 @@ export default class GraphCanvas extends Vue {
     else if (this.draggedNode) {
       // Drag a node.
       this.draggedNode.setPosition(x - (this.dragX || 0), y - (this.dragY || 0));
+      // this.actions.updateNode()
     } else if (this.dragX != null && this.dragY != null) {
       // Move the viewBox
       const sensitivity = 3;
