@@ -4,18 +4,20 @@
     <div :class="`elevation-${2}`" class="mx-auto pa-1 transition-swing">
       <GraphCanvas ref="graphCanvas" v-bind="{ nodes: graph.nodes, edges: graph.edges, config, state, actions }" />
     </div>
+    <Confirm :open="confirmOpen" :on-cancel="() => (confirmOpen = false)" :on-confirm="deleteGraph" />
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Vue, Watch } from 'nuxt-property-decorator';
+import { Component, Vue, Watch, Prop } from 'nuxt-property-decorator';
 
 // Components
 import GraphToolbar from './toolbar/GraphToolbar.vue';
 import GraphCanvas from './canvas/GraphCanvas.vue';
+import Confirm from './Confirm.vue';
 import { Graph, Node, Edge, EditorConfig, EditorState, Selected, EditorActions } from '@/types';
 
-const emptyGraph = () => new Graph({ id: 1111111111 });
+// const emptyGraph = () => new Graph({ id: 1111111111 });
 // Graph.nextId = 1;
 
 // TODO: This component should be split up into into smaller pieces.
@@ -23,13 +25,20 @@ const emptyGraph = () => new Graph({ id: 1111111111 });
 @Component({
   components: {
     GraphToolbar,
-    GraphCanvas
+    GraphCanvas,
+    Confirm
   }
 })
 export default class GraphContainer extends Vue {
+  @Prop({ type: Object, required: true }) graphFromRoute!: Graph;
+
+  graph: Graph = this.graphFromRoute.clone();
+
   drawer = false;
 
-  graph: Graph = emptyGraph();
+  confirmOpen = false;
+
+  // graph: Graph = emptyGraph();
 
   // Properties handled by the toolbar.
   // Determines the look of a new Edge or Node.
@@ -109,10 +118,22 @@ export default class GraphContainer extends Vue {
         console.log('download');
         // this.downloadSvg();
       },
+      doDelete: () => {
+        this.confirmOpen = true;
+      },
       doSave: () => {
+        if (this.graph.isTemp) {
+          this.$accessor.createGraph(this.graph);
+        } else {
+          this.$accessor.updateGraph(this.graph);
+        }
         console.log('doSave here');
       }
     };
+  }
+
+  deleteGraph() {
+    this.$accessor.deleteGraph(this.graph);
   }
 
   setSelected(type?: 'node' | 'edge', value?: Node | Edge) {
@@ -164,30 +185,16 @@ export default class GraphContainer extends Vue {
   //   this.ratio = window.innerWidth / window.innerHeight;
   // }
 
-  created() {
-    if (!this.isLoggedIn) {
-      this.graph = new Graph({ id: 1, name: 'Trial Graph', isTemp: true });
-    } else {
-      const graphId = Number.parseInt(this.$route.params.graphId, 10);
-      const graphById = this.$accessor.graphs.find(g => g.id === graphId);
-      if (graphById) {
-        this.graph = new Graph(graphById);
-      } else if (this.$accessor.graphs[0]) {
-        const firstGraph = this.$accessor.graphs[0];
-        this.$router.push(`/graphs/${firstGraph.id}`);
-      } else {
-        const newGraph = new Graph({ id: 1, name: 'New Graph', isTemp: true });
-        this.$accessor.setGraphs([newGraph]);
-        this.$router.push(`/graphs/${newGraph.id}`);
-      }
-    }
-  }
-
   @Watch('config.mode')
   onModeChange(mode: string) {
     if (mode !== 'edit') {
       this.setSelected();
     }
+  }
+
+  @Watch('graphFromRoute', { immediate: true })
+  onGraphFromRouteChange(newVal: Graph) {
+    this.graph = newVal.clone();
   }
 }
 </script>

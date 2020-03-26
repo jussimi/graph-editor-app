@@ -77,7 +77,7 @@
             style="max-width: 200px"
             @input="updateName($event)"
           />
-          <v-btn icon>
+          <v-btn icon @click="actions.doDelete()">
             <v-icon>mdi-delete</v-icon>
           </v-btn>
         </template>
