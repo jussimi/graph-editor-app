@@ -1,5 +1,5 @@
 import { getAccessorType, mutationTree, actionTree } from 'nuxt-typed-vuex';
-import { Context } from '@nuxt/types';
+// import { Context } from '@nuxt/types';
 // import { NuxtAxiosInstance } from '@nuxtjs/axios';
 import { queries } from '@/store-helpers/queries';
 import { Graph, GraphData } from '@/types';
@@ -49,11 +49,11 @@ export const mutations = mutationTree(state, {
 
   removeGraph(state, graphToRemove: Graph | GraphData) {
     state.graphs = state.graphs.filter(g => g.id !== graphToRemove.id);
-  },
-
-  initialiseStore() {
-    console.log('initialised');
   }
+
+  // initialiseStore() {
+  //   console.log('initialised');
+  // }
 });
 
 export const actions = actionTree(
@@ -63,9 +63,9 @@ export const actions = actionTree(
       this.app.$accessor.setEmail('a@a.com');
     },
 
-    async nuxtServerInit(_vuexContext, _nuxtContext: Context) {
-      // console.log(nuxtContext.req);
-    },
+    // async nuxtServerInit(_vuexContext, _nuxtContext: Context) {
+    //   // console.log(nuxtContext.req);
+    // },
 
     logout({ state }) {
       if (state.loggedIn) {
