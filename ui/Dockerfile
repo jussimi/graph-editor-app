@@ -9,6 +9,7 @@ COPY package.json /usr/src/app/
 COPY package-lock.json /usr/src/app/
 
 RUN npm install
+RUN npm run build
 
 COPY . /usr/src/app
 
