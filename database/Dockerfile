@@ -8,4 +8,6 @@ COPY ./scripts/init.sh /docker-entrypoint-initdb.d
 RUN mkdir -p data
 RUN chmod -R 777 /data
 
+COPY /data /tmp_data
+
 EXPOSE 5432

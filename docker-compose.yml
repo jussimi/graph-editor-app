@@ -8,8 +8,6 @@ services:
     environment:
       - POSTGRES_PASSWORD
     env_file: .env
-    volumes:
-      - ./database/data:/tmp_data
   api:
     container_name: graph_editor_api
     build: ./api
@@ -18,8 +16,6 @@ services:
     environment:
       PORT: $API_PORT
     env_file: .env
-    volumes:
-      - ./api:/usr/src/app
   ui:
     container_name: graph_editor_ui
     build: ./ui
@@ -28,5 +24,3 @@ services:
     environment:
       HOST: $UI_HOST
       PORT: $UI_PORT
-    volumes:
-      - ./ui:/usr/src/app
