@@ -91,4 +91,14 @@ export class Graph implements GraphData {
   isEqual(graph2: Graph): boolean {
     return JSON.stringify(this) === JSON.stringify(graph2);
   }
+
+  toJSON(): GraphData {
+    const { id, name, nodes, edges } = this;
+    return {
+      id,
+      name,
+      nodes,
+      edges
+    };
+  }
 }
