@@ -3,4 +3,4 @@ services:
   api:
     command: npm run start
   ui:
-    command: npm run prod
+    command: npm run start

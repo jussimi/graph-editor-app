@@ -41,7 +41,7 @@ export default {
    */
   modules: [
     // Doc: https://axios.nuxtjs.org/usage
-    ['@nuxtjs/axios', { proxy: false, baseUrl: 'http://0.0.0.0:4000' }],
+    '@nuxtjs/axios',
     //
     'cookie-universal-nuxt',
   ],
