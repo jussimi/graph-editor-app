@@ -13,7 +13,10 @@ const {
   GRAPH_EDITOR_SCHEMA,
 } = process.env;
 
+console.log(PORT);
+
 const CONNECTION_STRING = `postgres://${GRAPH_EDITOR_USER}:${GRAPH_EDITOR_USER_PASS}@${DB_HOST}:${DB_PORT}/${DB_NAME}`;
+console.log(CONNECTION_STRING);
 
 const postgraphileOptions = {
   jwtPgTypeIdentifier: `${GRAPH_EDITOR_SCHEMA}.auth_token`,
@@ -46,7 +49,7 @@ const postgraphileOptions = {
 /* eslint-disable */
 const whitelist = ['http://0.0.0.0:3000'];
 const corsOptions = {
-  origin: function(origin, callback) {
+  origin: function (origin, callback) {
     if (whitelist.indexOf(origin) !== -1) {
       callback(null, true);
     } else {
