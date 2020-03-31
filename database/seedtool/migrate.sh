@@ -1,19 +1,28 @@
 #!/bin/bash
 set -e
-MIGRATE_COMMANDS=${@:1}
 
-# Loop through all files in migrations (note that we have been given write access in Dockerfile)
-FILES=/tmp_migrations/*
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+
+ENV_FILE=${SCRIPT_DIR}/../../.env
+. $ENV_FILE
+source $ENV_FILE
+export $(cut -d= -f1 $ENV_FILE)
+
+mkdir -p ${SCRIPT_DIR}/tmp
+
+FILES=../migrations/*
 for file in $FILES
 do
   f=`basename $file`
-  envsubst < "$file" > "migrations/$f"
+  envsubst < "$file" > "tmp/$f"
 done
 
 # Do migrations
-echo "postgres://${DB_USER}:${DB_PASS}@${DB_HOST}:${DB_PORT}/${DB_NAME}?sslmode=disable"
-migrate \
+# echo "postgres://${DB_USER}:${DB_PASS}@${DB_HOST}:${DB_PORT}/${DB_NAME}?sslmode=disable"
+
+docker run \
+  --volume ${SCRIPT_DIR}/tmp:/migrations \
+  --network host migrate/migrate \
+  -path=/migrations/ \
   -verbose \
-  -path migrations \
-  -database "postgres://${DB_USER}:${DB_PASS}@localhost:${DB_PORT}/${DB_NAME}?sslmode=disable" \
-  ${MIGRATE_COMMANDS}
+  -database postgres://testuser:testpass@localhost:5432/testdb?sslmode=disable ${@}
