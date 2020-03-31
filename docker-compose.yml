@@ -16,6 +16,8 @@ services:
     environment:
       PORT: $API_PORT
     env_file: .env
+    depends_on:
+      - postgresql
   ui:
     container_name: graph_editor_ui
     build: ./ui
