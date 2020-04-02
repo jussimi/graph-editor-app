@@ -1,7 +1,7 @@
 build:
   stage: build 
   image: 
-    name: docker/compose:1.21.2
+    name: docker/compose:1.25.4
     entrypoint: ["/bin/sh", "-c"]
   variables:
     DOCKER_TLS_CERTDIR: "/certs"
