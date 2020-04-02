@@ -5,8 +5,9 @@ build:
     entrypoint: ["/bin/sh", "-c"]
   variables:
     DOCKER_HOST: tcp://docker:2375
+    DOCKER_TLS_CERTDIR: "/certs"
   services:
-    - docker:dind
+    - docker:19.03.0-dind
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker-compose build
