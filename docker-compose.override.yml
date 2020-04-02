@@ -1,8 +1,5 @@
 version: "3.7"
 services:
-  postgresql:
-    volumes:
-      - ./database/migrations:/tmp_migrations
   api:
     volumes:
       - ./api:/usr/src/app

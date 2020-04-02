@@ -19,6 +19,7 @@ const CONNECTION_STRING = `postgres://${GRAPH_EDITOR_USER}:${GRAPH_EDITOR_USER_P
 console.log(CONNECTION_STRING);
 
 const postgraphileOptions = {
+  retryOnInitFail: true,
   jwtPgTypeIdentifier: `${GRAPH_EDITOR_SCHEMA}.auth_token`,
   jwtSecret: JWT_SECRET,
   graphqlRoute: '/graphql',
