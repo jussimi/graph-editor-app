@@ -1,5 +1,8 @@
 build:
-  stage: build 
+  stage: build
+  only:
+    - tags
+    - master
   image: 
     name: docker/compose:1.25.4
     entrypoint: ["/bin/sh", "-c"]
