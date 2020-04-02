@@ -1,19 +1,19 @@
 version: "3.7"
 services:
   postgres:
-    container_name: graph_editor_db
+    image: ${CI_REGISTRY_IMAGE-local}/postgres:${CI_COMMIT_SHORT_SHA-local}
     build: ./database
     ports:
       - "5432:5432"
   api:
-    container_name: graph_editor_api
+    image: ${CI_REGISTRY_IMAGE-local}/api:${CI_COMMIT_SHORT_SHA-local}
     build: ./api
     ports:
       - "4000:4000"
     environment:
       PORT: 4000
   ui:
-    container_name: graph_editor_ui
+    image: ${CI_REGISTRY_IMAGE-local}/ui:${CI_COMMIT_SHORT_SHA-local}
     build: ./ui
     ports:
       - "3000:3000"
