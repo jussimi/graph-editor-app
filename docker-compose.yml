@@ -1,26 +1,22 @@
 version: "3.7"
 services:
-  postgresql:
+  postgres:
     container_name: graph_editor_db
     build: ./database
     ports:
       - "5432:5432"
-    environment:
-      - POSTGRES_PASSWORD
-    env_file: .env
   api:
     container_name: graph_editor_api
     build: ./api
     ports:
       - "4000:4000"
     environment:
-      PORT: $API_PORT
-    env_file: .env
+      PORT: 4000
   ui:
     container_name: graph_editor_ui
     build: ./ui
     ports:
       - "3000:3000"
     environment:
-      HOST: $UI_HOST
-      PORT: $UI_PORT
+      HOST: 0.0.0.0
+      PORT: 3000

@@ -12,13 +12,15 @@ RUN apt-get update && \
 RUN mkdir /logs && touch /logs/postgresql.log && chmod -R 777 /logs && mkdir /database && chmod -R 777 /database
 
 # Add migrate.sh
-COPY ./cbin/migrate.sh .
-RUN chmod +x migrate.sh
+COPY ./cbin/entrypoint.sh ./cbin/setup.sh ./cbin/migrate.sh ./
+RUN chmod +x migrate.sh && chmod +x setup.sh && chmod +x entrypoint.sh
 
 COPY ./cbin/init.sh /docker-entrypoint-initdb.d
 COPY ./migrations /database/migrations
 
 EXPOSE 5432
+
+ENTRYPOINT [ "./entrypoint.sh" ]
 
 CMD [\
   "-c", "logging_collector=on", "-c", "log_directory=/logs", \
