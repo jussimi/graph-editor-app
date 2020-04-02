@@ -1,0 +1,10 @@
+POSTGRES_PASSWORD=postgres
+DB_HOST=postgres
+DB_PORT=5432
+DB_NAME=testdb
+DB_USER=testuser
+DB_PASS=testpass
+GRAPH_EDITOR_SCHEMA=graph_editor
+GRAPH_EDITOR_USER=graph_editor_postgraphile
+GRAPH_EDITOR_USER_PASS=graph_editor_postgraphile_pass
+JWT_SECRET=super_secret_jwt_secret

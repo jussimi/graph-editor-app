@@ -1,8 +1,12 @@
 version: "3.7"
 services:
+  postgres:
+    env_file: env-development
   api:
     volumes:
       - ./api:/usr/src/app
+    env_file: env-development
   ui:
     volumes:
       - ./ui:/usr/src/app
+    env_file: env-development
