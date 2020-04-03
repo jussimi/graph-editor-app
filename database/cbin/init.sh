@@ -2,8 +2,6 @@
 set -e
 cd /database
 
-printenv
-
 # Create files where the environment variables have been substituted.
 envsubst < init.sql > env_init.sql
 envsubst < extensions.sql > env_extensions.sql
