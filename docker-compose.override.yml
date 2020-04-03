@@ -1,12 +1,21 @@
 version: "3.7"
 services:
   postgres:
+    build: ./database
+    env_file: env-development
+    ports:
+      - "5432:5432"
+  migrate:
+    build: ./migrate
     env_file: env-development
   api:
+    build: ./migrate
     volumes:
       - ./api:/usr/src/app
     env_file: env-development
+    command: npm run dev
   ui:
+    build: ./ui
     volumes:
       - ./ui:/usr/src/app
-    env_file: env-development
+    command: npm run dev

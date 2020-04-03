@@ -1,10 +1,15 @@
-POSTGRES_PASSWORD=postgres
+# NOTE: This file is just a mocked file. The real secrets should come from gitlab in production.
+POSTGRES_PASSWORD=postgres_production
 DB_HOST=postgres
 DB_PORT=5432
-DB_NAME=testdb
-DB_USER=testuser
-DB_PASS=testpass
+DB_NAME=production_testdb
+DB_USER=production_testuser
+DB_PASS=production_testpass
 GRAPH_EDITOR_SCHEMA=graph_editor
 GRAPH_EDITOR_USER=graph_editor_postgraphile
-GRAPH_EDITOR_USER_PASS=graph_editor_postgraphile_pass
-JWT_SECRET=super_secret_jwt_secret
+GRAPH_EDITOR_USER_PASS=production_graph_editor_postgraphile_pass
+JWT_SECRET=production_super_secret_jwt_secret
+
+# NOTE: These should be generated from env variables in gitlab during deployment
+OWNER_DB_URL=postgres://production_testuser:production_testpass@postgres:5432/production_testdb?sslmode=disable
+GRAPHILE_DB_URL=postgres://graph_editor_postgraphile:production_graph_editor_postgraphile_pass@postgres:5432/production_testdb?sslmode=disable

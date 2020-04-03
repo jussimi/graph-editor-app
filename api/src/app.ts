@@ -4,18 +4,13 @@ import postgraphile, { PostGraphileOptions } from 'postgraphile';
 
 const {
   PORT,
-  DB_HOST,
   JWT_SECRET,
-  DB_PORT,
-  DB_NAME,
-  GRAPH_EDITOR_USER,
-  GRAPH_EDITOR_USER_PASS,
   GRAPH_EDITOR_SCHEMA,
 } = process.env;
 
-console.log(PORT);
 
-const CONNECTION_STRING = `postgres://${GRAPH_EDITOR_USER}:${GRAPH_EDITOR_USER_PASS}@${DB_HOST}:${DB_PORT}/${DB_NAME}`;
+const CONNECTION_STRING = process.env.GRAPHILE_DB_URL;
+console.log(PORT);
 console.log(CONNECTION_STRING);
 
 const postgraphileOptions = {
@@ -32,7 +27,7 @@ const postgraphileOptions = {
   showErrorStack: 'json',
   extendedErrors: ['hint', 'detail', 'errcode'],
   // exportGqlSchemaPath: "schema.graphql",
-  pgDefaultRole: 'graph_editor_anonymous',
+  pgDefaultRole: `${GRAPH_EDITOR_SCHEMA}_anonymous`,
   graphiql: true,
   enhanceGraphiql: true,
   // allowExplain(): boolean {

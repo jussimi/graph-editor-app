@@ -1,3 +1,10 @@
+stages:
+  - build
+  - push
+
+before_script:
+  - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  
 build:
   stage: build
   only:
@@ -11,6 +18,34 @@ build:
   services:
     - docker:19.03.0-dind
   script:
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker-compose build
     - docker-compose push
+
+# Picked up from this article: https://blog.callr.tech/building-docker-images-with-gitlab-ci-best-practices/
+push:
+  variables:
+    # We are just playing with Docker here. 
+    # We do not need GitLab to clone the source code.
+    GIT_STRATEGY: none
+  stage: push
+  only:
+    # Only "master" should be tagged "latest"
+    - master
+  script:
+    # Because we have no guarantee that this job will be picked up by the same runner 
+    # that built the image in the previous step, we pull it again locally
+    # TODO: Get rid of this hardcoded mess.
+    - docker pull ${CI_REGISTRY_IMAGE}/postgres:${CI_COMMIT_SHORT_SHA}
+    - docker pull ${CI_REGISTRY_IMAGE}/migrate:${CI_COMMIT_SHORT_SHA}
+    - docker pull ${CI_REGISTRY_IMAGE}/api:${CI_COMMIT_SHORT_SHA}
+    - docker pull ${CI_REGISTRY_IMAGE}/ui:${CI_COMMIT_SHORT_SHA}
+    # Then we tag it "latest"
+    - docker tag ${CI_REGISTRY_IMAGE}/postgres:${CI_COMMIT_SHORT_SHA} ${CI_REGISTRY_IMAGE}/postgres:latest
+    - docker tag ${CI_REGISTRY_IMAGE}/migrate:${CI_COMMIT_SHORT_SHA} ${CI_REGISTRY_IMAGE}/migrate:latest
+    - docker tag ${CI_REGISTRY_IMAGE}/api:${CI_COMMIT_SHORT_SHA} ${CI_REGISTRY_IMAGE}/api:latest
+    - docker tag ${CI_REGISTRY_IMAGE}/ui:${CI_COMMIT_SHORT_SHA} ${CI_REGISTRY_IMAGE}/ui:latest
+    # Annnd we push it.
+    - docker push ${CI_REGISTRY_IMAGE}/postgres:latest
+    - docker push ${CI_REGISTRY_IMAGE}/migrate:latest
+    - docker push ${CI_REGISTRY_IMAGE}/api:latest
+    - docker push ${CI_REGISTRY_IMAGE}/ui:latest

@@ -6,13 +6,15 @@ const graphqlQuery = async (
   { query, variables }: { query: string; variables?: any },
   useAuth = false
 ) => {
+  const API_PORT = process.env.API_PORT;
   let url;
   if (process.client) {
+    url = `${window.location.hostname}:${API_PORT}/graphql`;
     url = 'http://0.0.0.0:4000/graphql';
   } else {
-    // WHen called from server side, the call is made from within the docker container.
+    // When called from server side, the call is made from within the docker container.
     // Thus we change the api-url to the url in the docker-network.
-    url = 'http://api:4000/graphql';
+    url = `http://api:${API_PORT}/graphql`;
   }
   let headers = {};
   if (useAuth) {

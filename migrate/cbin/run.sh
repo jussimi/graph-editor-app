@@ -5,11 +5,10 @@ cd $SCRIPT_DIR
 
 DATA_DIR=$SCRIPT_DIR/database
 FIRST_COMMAND=$1
-MIGRATE_COMMANDS=${@:1}
+MIGRATE_COMMANDS=${@}
 
 mkdir -p $DATA_DIR/tmp
 if [ "$FIRST_COMMAND" = "up" -o "$FIRST_COMMAND" = "down" -o "$FIRST_COMMAND" = "goto" ]; then
-  echo "substitute variables"
   FILES=$DATA_DIR/migrations/*
   for file in $FILES
   do
@@ -17,11 +16,12 @@ if [ "$FIRST_COMMAND" = "up" -o "$FIRST_COMMAND" = "down" -o "$FIRST_COMMAND" = 
     envsubst < "$file" > "$DATA_DIR/tmp/$f"
   done
 fi
-echo "postgres://${DB_USER}:${DB_PASS}@${DB_HOST}:${DB_PORT}/${DB_NAME}?sslmode=disable"
 
-migrate -source file://$DATA_DIR/tmp \
+echo "connection string $OWNER_DB_URL"
+
+migrate -path /$DATA_DIR/tmp \
   -verbose \
-  -database postgres://${DB_USER}:${DB_PASS}@${DB_HOST}:${DB_PORT}/${DB_NAME}?sslmode=disable \
+  -database $OWNER_DB_URL \
   $MIGRATE_COMMANDS
 
-rm -rf $SCRIPT_DIR/tmp
+rm -rf $DATA_DIR/tmp
