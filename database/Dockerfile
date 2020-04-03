@@ -1,26 +1,17 @@
 FROM postgres:12.2
 
-RUN apt-get update && \
-    apt-get install -y gettext pwgen iputils-ping curl apt-transport-https entr && \
-    curl -L https://packagecloud.io/golang-migrate/migrate/gpgkey | apt-key add - && \
-    echo "deb https://packagecloud.io/golang-migrate/migrate/ubuntu/ xenial main" > /etc/apt/sources.list.d/migrate.list && \
-    apt-get update && \
-    apt-get install -y migrate
+RUN apt-get update && apt-get install gettext -y
 
-# Create new logs and tmp directories.
+# Create new directory for logs
 # Note that "postgres" is the user in the container, hence the chmod.
-RUN mkdir /logs && touch /logs/postgresql.log && chmod -R 777 /logs && mkdir /database && chmod -R 777 /database
+RUN mkdir /logs && touch /logs/postgresql.log && chown -R postgres:postgres /logs && \
+  mkdir /database && chown -R postgres:postgres /database
 
-# Add migrate.sh
-COPY ./cbin/entrypoint.sh ./cbin/setup.sh ./cbin/migrate.sh ./
-RUN chmod +x migrate.sh && chmod +x setup.sh && chmod +x entrypoint.sh
+COPY ./init.sql ./extensions.sql ./database/
 
 COPY ./cbin/init.sh /docker-entrypoint-initdb.d
-COPY ./migrations /database/migrations
 
 EXPOSE 5432
-
-ENTRYPOINT [ "./entrypoint.sh" ]
 
 CMD [\
   "-c", "logging_collector=on", "-c", "log_directory=/logs", \

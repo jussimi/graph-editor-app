@@ -1,12 +1,15 @@
 #!/bin/bash
 set -e
+cd /database
 
-psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-EOSQL
-    CREATE USER $DB_USER WITH PASSWORD '$DB_PASS' CREATEROLE;
-    CREATE DATABASE $DB_NAME;
-    GRANT ALL PRIVILEGES ON DATABASE $DB_NAME TO $DB_USER;
-EOSQL
+printenv
 
-psql testdb postgres <<-EOSQL
-    CREATE EXTENSION pgcrypto;
-EOSQL
+# Create files where the environment variables have been substituted.
+envsubst < init.sql > env_init.sql
+envsubst < extensions.sql > env_extensions.sql
+
+# Initialize the new database.
+psql -v ON_ERROR_STOP=1 -U "$POSTGRES_USER" -d "$POSTGRES_DB" -a -f env_init.sql
+
+# Create extensions
+psql -v ON_ERROR_STOP=1 -U "$POSTGRES_USER" -d "$DB_NAME" -a -f env_extensions.sql
