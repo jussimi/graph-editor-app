@@ -1,5 +1,5 @@
 import { getAccessorType, mutationTree, actionTree } from 'nuxt-typed-vuex';
-// import { Context } from '@nuxt/types';
+import { Context } from '@nuxt/types';
 // import { NuxtAxiosInstance } from '@nuxtjs/axios';
 import { queries } from '@/store-helpers/queries';
 import { Graph, GraphData } from '@/types';
@@ -8,7 +8,10 @@ export const state = () => ({
   personId: 0,
   email: '',
   loggedIn: false,
-  graphs: [] as Graph[]
+  graphs: [] as Graph[],
+  env: {
+    API_PORT: ''
+  } as Record<string, string>,
 });
 
 type RootState = ReturnType<typeof state>;
@@ -49,6 +52,10 @@ export const mutations = mutationTree(state, {
 
   removeGraph(state, graphToRemove: Graph | GraphData) {
     state.graphs = state.graphs.filter(g => g.id !== graphToRemove.id);
+  },
+
+  setEnv(state, env: Record<string, string>) {
+    state.env = env;
   }
 
   // initialiseStore() {
@@ -63,9 +70,11 @@ export const actions = actionTree(
       this.app.$accessor.setEmail('a@a.com');
     },
 
-    // async nuxtServerInit(_vuexContext, _nuxtContext: Context) {
-    //   // console.log(nuxtContext.req);
-    // },
+    async nuxtServerInit(_vuexContext, _nuxtContext: Context) {
+      // process.env is not available on client side -> save it to store on 
+      const { API_PORT = '' } = process.env;
+      this.app.$accessor.setEnv({ API_PORT });
+    },
 
     logout({ state }) {
       if (state.loggedIn) {
