@@ -1,4 +1,5 @@
 #!/bin/sh
+# This script is used in the gitlab-ci to write an env file with real secrets.
 FILE_TO_WRITE=$1
 echo POSTGRES_PASSWORD=$POSTGRES_PASSWORD > $FILE_TO_WRITE
 echo DB_HOST=$DB_HOST >> $FILE_TO_WRITE

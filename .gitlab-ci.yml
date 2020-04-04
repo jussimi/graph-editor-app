@@ -2,9 +2,6 @@ stages:
   - build
   - push
   - deploy
-
-before_script:
-  - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   
 build:
   # NOTE: We don't want to build the postgres image every time, since it shouldn't change.
@@ -21,6 +18,7 @@ build:
   services:
     - docker:19.03.0-dind
   script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker-compose build migrate api ui
     - docker-compose push migrate api ui
 
@@ -35,6 +33,7 @@ push:
     # Only "master" should be tagged "latest"
     - master
   script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     # Because we have no guarantee that this job will be picked up by the same runner 
     # that built the image in the previous step, we pull it again locally
     #
@@ -55,9 +54,23 @@ push:
     - docker push ${CI_REGISTRY_IMAGE}/ui:latest
 deploy:
   stage: deploy
+  #only:
+  #  - master
   script:
-    - ls -lah
-    - cat env-production
+    # Create env env-file with real secrets.
     - chmod +x setup_env.sh
-    - ./setup_env.sh test_env_file
-    - cat test_env_file
+    - ./setup_env.sh env
+    # Create ssh dir and add the private key.
+    - mkdir -p ~/.ssh
+    - echo "$PRODUCTION_SERVER_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+    - eval "$(ssh-agent -s)"
+    - ssh-add ~/.ssh/id_rsa
+    # Add server to known hosts
+    - ssh-keyscan -H $PRODUCTION_SERVER_IP >> ~/.ssh/known_hosts
+    # Copy env-file to the remote server.
+    - cat env | ssh ec2-user@$PRODUCTION_SERVER_IP "cat > env-production"
+    # Login to the container registry in remote and pull images
+    #- ssh ec2-user@$PRODUCTION_SERVER_IP docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    #- ssh ec2-user@$PRODUCTION_SERVER_IP docker-compose -f docker-compose.yml pull && docker-compose -f docker-compose.yml up -d
