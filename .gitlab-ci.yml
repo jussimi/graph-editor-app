@@ -1,6 +1,7 @@
 stages:
   - build
   - push
+  - deploy
 
 before_script:
   - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
@@ -52,3 +53,9 @@ push:
     - docker push ${CI_REGISTRY_IMAGE}/migrate:latest
     - docker push ${CI_REGISTRY_IMAGE}/api:latest
     - docker push ${CI_REGISTRY_IMAGE}/ui:latest
+deploy:
+  stage: deploy
+  script:
+    - chmod +x ./setup_env.sh
+    - ./setup_env.sh test_env_file
+    - cat test_env_file
