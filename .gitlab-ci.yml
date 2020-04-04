@@ -56,6 +56,7 @@ push:
 deploy:
   stage: deploy
   script:
-    - chmod +x ./setup_env.sh
-    - ./setup_env.sh test_env_file
-    - cat test_env_file
+    - ls -lah
+    #- chmod +x ./setup_env.sh
+    #- ./setup_env.sh test_env_file
+    #- cat test_env_file
