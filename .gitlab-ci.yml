@@ -54,8 +54,8 @@ push:
     - docker push ${CI_REGISTRY_IMAGE}/ui:latest
 deploy:
   stage: deploy
-  #only:
-  #  - master
+  only:
+    - master
   script:
     # Create env env-file with real secrets.
     - chmod +x setup_env.sh
@@ -72,5 +72,5 @@ deploy:
     # Copy env-file to the remote server.
     - cat env | ssh ec2-user@$PRODUCTION_SERVER_IP "cat > env-production"
     # Login to the container registry in remote and pull images
-    #- ssh ec2-user@$PRODUCTION_SERVER_IP docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    #- ssh ec2-user@$PRODUCTION_SERVER_IP docker-compose -f docker-compose.yml pull && docker-compose -f docker-compose.yml up -d
+    - ssh ec2-user@$PRODUCTION_SERVER_IP docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - ssh ec2-user@$PRODUCTION_SERVER_IP docker-compose -f docker-compose.yml pull && docker-compose -f docker-compose.yml up -d
