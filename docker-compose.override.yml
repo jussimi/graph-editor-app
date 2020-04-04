@@ -9,7 +9,7 @@ services:
     build: ./migrate
     env_file: env-development
   api:
-    build: ./migrate
+    build: ./api
     volumes:
       - ./api:/usr/src/app
     env_file: env-development

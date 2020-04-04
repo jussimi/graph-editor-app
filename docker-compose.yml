@@ -1,23 +1,23 @@
 version: "3.7"
 services:
   postgres:
-    image: ${CI_REGISTRY_IMAGE-local}/postgres:${CI_COMMIT_SHORT_SHA-local}
+    image: ${CI_REGISTRY_IMAGE-local}/postgres:latest
     ports:
       - "5432:5432"
     env_file: env-production
   migrate:
-    image: ${CI_REGISTRY_IMAGE-local}/migrate:${CI_COMMIT_SHORT_SHA-local}
+    image: ${CI_REGISTRY_IMAGE-local}/migrate:${CI_COMMIT_SHORT_SHA-latest}
     command: up
     env_file: env-production
   api:
-    image: ${CI_REGISTRY_IMAGE-local}/api:${CI_COMMIT_SHORT_SHA-local}
+    image: ${CI_REGISTRY_IMAGE-local}/api:${CI_COMMIT_SHORT_SHA-latest}
     ports:
       - "4000:4000"
     env_file: env-production
     environment:
       PORT: 4000
   ui:
-    image: ${CI_REGISTRY_IMAGE-local}/ui:${CI_COMMIT_SHORT_SHA-local}
+    image: ${CI_REGISTRY_IMAGE-local}/ui:${CI_COMMIT_SHORT_SHA-latest}
     ports:
       - "3000:3000"
     environment:
