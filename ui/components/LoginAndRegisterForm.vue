@@ -32,7 +32,7 @@
         <v-card-actions>
           <v-spacer />
           <v-btn color="primary" @click="$emit('input', false)">Cancel</v-btn>
-          <v-btn color="primary" type="submit" :loading="loading" @click="doAction">{{ type }}</v-btn>
+          <v-btn color="primary" type="submit" :loading="loading">{{ type }}</v-btn>
         </v-card-actions>
       </v-card>
     </v-form>
