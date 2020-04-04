@@ -69,8 +69,10 @@ deploy:
     - ssh-add ~/.ssh/id_rsa
     # Add server to known hosts
     - ssh-keyscan -H $PRODUCTION_SERVER_IP >> ~/.ssh/known_hosts
-    # Copy env-file to the remote server.
+    # Copy env-file and docker-compose.yml to the remote server.
     - cat env | ssh ec2-user@$PRODUCTION_SERVER_IP "cat > env-production"
+    - cat docker-compose.yml | ssh ec2-user@$PRODUCTION_SERVER_IP "cat > docker-compose.yml"
     # Login to the container registry in remote and pull images
+    - ssh ec2-user@$PRODUCTION_SERVER_IP 'echo "CI_REGISTRY_IMAGE=$CI_REGISTRY_IMAGE" > .env'
     - ssh ec2-user@$PRODUCTION_SERVER_IP docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - ssh ec2-user@$PRODUCTION_SERVER_IP docker-compose -f docker-compose.yml pull && docker-compose -f docker-compose.yml up -d
