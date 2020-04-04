@@ -6,6 +6,8 @@ before_script:
   - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   
 build:
+  # NOTE: We don't want to build the postgres image every time, since it shouldn't change.
+  #  - could be smart to move it to its own repo, but we'll keep it here for now.
   stage: build
   only:
     - tags
@@ -18,8 +20,8 @@ build:
   services:
     - docker:19.03.0-dind
   script:
-    - docker-compose build
-    - docker-compose push
+    - docker-compose build migrate api ui
+    - docker-compose push migrate api ui
 
 # Picked up from this article: https://blog.callr.tech/building-docker-images-with-gitlab-ci-best-practices/
 push:
@@ -34,18 +36,19 @@ push:
   script:
     # Because we have no guarantee that this job will be picked up by the same runner 
     # that built the image in the previous step, we pull it again locally
+    #
     # TODO: Get rid of this hardcoded mess.
-    - docker pull ${CI_REGISTRY_IMAGE}/postgres:${CI_COMMIT_SHORT_SHA}
+    #- docker pull ${CI_REGISTRY_IMAGE}/postgres:${CI_COMMIT_SHORT_SHA}
     - docker pull ${CI_REGISTRY_IMAGE}/migrate:${CI_COMMIT_SHORT_SHA}
     - docker pull ${CI_REGISTRY_IMAGE}/api:${CI_COMMIT_SHORT_SHA}
     - docker pull ${CI_REGISTRY_IMAGE}/ui:${CI_COMMIT_SHORT_SHA}
     # Then we tag it "latest"
-    - docker tag ${CI_REGISTRY_IMAGE}/postgres:${CI_COMMIT_SHORT_SHA} ${CI_REGISTRY_IMAGE}/postgres:latest
+    #- docker tag ${CI_REGISTRY_IMAGE}/postgres:${CI_COMMIT_SHORT_SHA} ${CI_REGISTRY_IMAGE}/postgres:latest
     - docker tag ${CI_REGISTRY_IMAGE}/migrate:${CI_COMMIT_SHORT_SHA} ${CI_REGISTRY_IMAGE}/migrate:latest
     - docker tag ${CI_REGISTRY_IMAGE}/api:${CI_COMMIT_SHORT_SHA} ${CI_REGISTRY_IMAGE}/api:latest
     - docker tag ${CI_REGISTRY_IMAGE}/ui:${CI_COMMIT_SHORT_SHA} ${CI_REGISTRY_IMAGE}/ui:latest
     # Annnd we push it.
-    - docker push ${CI_REGISTRY_IMAGE}/postgres:latest
+    #- docker push ${CI_REGISTRY_IMAGE}/postgres:latest
     - docker push ${CI_REGISTRY_IMAGE}/migrate:latest
     - docker push ${CI_REGISTRY_IMAGE}/api:latest
     - docker push ${CI_REGISTRY_IMAGE}/ui:latest
