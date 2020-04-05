@@ -15,8 +15,8 @@ import { Component, Prop, Vue } from 'nuxt-property-decorator';
 
 @Component
 export default class ColorPicker extends Vue {
-  @Prop({ type: [String, Number], default: 'text' }) value!: string | number;
+  @Prop({ type: [String, Number] }) value!: string | number;
   @Prop({ type: Array }) rules!: Function[];
-  @Prop({ type: String }) type!: 'text' | 'number';
+  @Prop({ type: String, default: 'text' }) type!: 'text' | 'number';
 }
 </script>

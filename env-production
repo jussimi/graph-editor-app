@@ -9,6 +9,7 @@ GRAPH_EDITOR_SCHEMA=graph_editor
 GRAPH_EDITOR_USER=graph_editor_postgraphile
 GRAPH_EDITOR_USER_PASS=production_graph_editor_postgraphile_pass
 JWT_SECRET=production_super_secret_jwt_secret
+SERVER_IP=0.0.0.0
 
 # NOTE: These should be generated from env variables in gitlab during deployment
 OWNER_DB_URL=postgres://production_testuser:production_testpass@postgres:5432/production_testdb?sslmode=disable

@@ -3,7 +3,7 @@ import { Graph, GraphData } from '@/types';
 
 const graphqlQuery = async (
   app: NuxtAppOptions,
-  { query, variables }: { query: string; variables?: any },
+  { query, variables }: { query: string; variables: any },
   useAuth = false
 ) => {
   const { API_PORT } = app.$accessor.env;
@@ -16,10 +16,13 @@ const graphqlQuery = async (
     // Thus we change the api-url to the url in the docker-network.
     url = `http://api:${API_PORT}/graphql`;
   }
-  let headers = {};
+  let headers = {} as Record<string, string>;
   if (useAuth) {
     const authToken = app.$cookies.get('authToken');
     headers = { Authorization: `Bearer ${authToken}` };
+  }
+  if (process.server) {
+    headers.origin = `http://ui:${process.env.PORT}`;
   }
   let data: any;
   let error: any;
@@ -40,18 +43,11 @@ const graphqlQuery = async (
 export default graphqlQuery;
 
 const registerPerson = async (app: NuxtAppOptions, email: string, password: string) => {
-  const query = `
-    mutation {
-      registerPerson(
-        input: { email: "${email}", password: "${password}" }
-      ) {
-        authToken
-      }
-    }
-  `;
+  const query = 'registerPerson';
+  const variables = { email, password };
   let data: { authToken: string } | undefined;
   let error: any;
-  const response = await graphqlQuery(app, { query });
+  const response = await graphqlQuery(app, { query, variables });
   if (response.data) {
     const authToken = response.data.registerPerson?.authToken;
     if (authToken) {
@@ -65,16 +61,11 @@ const registerPerson = async (app: NuxtAppOptions, email: string, password: stri
 };
 
 const loginPerson = async (app: NuxtAppOptions, email: string, password: string) => {
-  const query = `
-    mutation {
-      authenticate(input: {email: "${email}", password: "${password}"}) {
-        authToken
-      }
-    }
-  `;
+  const query = 'loginPerson';
+  const variables = { email, password };
   let data: { authToken: string } | undefined;
   let error: any;
-  const response = await graphqlQuery(app, { query });
+  const response = await graphqlQuery(app, { query, variables });
   if (response.data) {
     const authToken = response.data.authenticate?.authToken;
     if (authToken) {
@@ -88,16 +79,11 @@ const loginPerson = async (app: NuxtAppOptions, email: string, password: string)
 };
 
 const removePerson = async (app: NuxtAppOptions, email: string, password: string) => {
-  const query = `
-    mutation {
-      removePerson(input: {email: "${email}", password: "${password}"}) {
-        boolean
-      }
-    }
-  `;
+  const query = 'removePerson';
+  const variables = { email, password };
   let data: { success: boolean } | undefined;
   let error: any;
-  const response = await graphqlQuery(app, { query });
+  const response = await graphqlQuery(app, { query, variables });
   if (response.data?.removePerson) {
     const success = response.data.removePerson.boolean;
     data = { success };
@@ -109,27 +95,10 @@ const removePerson = async (app: NuxtAppOptions, email: string, password: string
 };
 
 const fetchAllResources = async (app: NuxtAppOptions) => {
-  const query = `
-    {
-      allPeople(orderBy:ID_ASC, last:1) {
-        nodes {
-          id
-          email
-          graphsByPersonId {
-            nodes {
-              id
-              name
-              edges
-              nodes
-            }
-          }
-        }
-      }
-    }
-  `;
+  const query = 'fetchAllResources';
   let data: { personId: number; email: string; graphs: GraphData[] } | undefined;
   let error: any;
-  const response = await graphqlQuery(app, { query }, true);
+  const response = await graphqlQuery(app, { query, variables: {} }, true);
   if (response.data) {
     const person = response.data.allPeople?.nodes?.[0];
     if (person) {
@@ -148,21 +117,12 @@ const fetchAllResources = async (app: NuxtAppOptions) => {
 
 const createGraph = async (app: NuxtAppOptions, personId: number, graph: Graph | GraphData) => {
   const { name, edges, nodes } = graph;
-  const query = `
-    mutation($edges: JSON!, $nodes: JSON!) {
-      createGraph(input: { graph: { personId: ${personId}, name: "${name}", nodes: $nodes, edges: $edges} }) {
-        graph {
-          id
-          name
-          nodes
-          edges
-        }
-      }
-    }
-  `;
+  const query = 'createGraph';
   const variables = {
     edges,
     nodes,
+    personId,
+    name,
   };
   console.log(query);
   let data: { graph: GraphData } | undefined;
@@ -184,21 +144,12 @@ const createGraph = async (app: NuxtAppOptions, personId: number, graph: Graph |
 
 const updateGraph = async (app: NuxtAppOptions, graph: Graph | GraphData) => {
   const { id, name, nodes, edges } = graph;
-  const query = `
-    mutation($edges: JSON!, $nodes: JSON!) {
-      updateGraphById(input: {id: ${id}, graphPatch: { edges: $edges, nodes: $nodes, name: "${name}" }}) {
-        graph {
-          id
-          edges
-          nodes
-          name
-        }
-      }
-    }
-  `;
+  const query = 'updateGraphById';
   const variables = {
+    id,
     edges,
     nodes,
+    name,
   };
   let data: { graph: GraphData } | undefined;
   let error: any;
@@ -219,18 +170,11 @@ const updateGraph = async (app: NuxtAppOptions, graph: Graph | GraphData) => {
 
 const deleteGraph = async (app: NuxtAppOptions, graph: Graph | GraphData) => {
   const { id } = graph;
-  const query = `
-    mutation {
-      deleteGraphById(input: {id: ${id}}) {
-        graph {
-          id
-        }
-      }
-    }
-  `;
+  const query = 'deleteGraphById';
+  const variables = { id };
   let data: { success: boolean } | undefined;
   let error: any;
-  const response = await graphqlQuery(app, { query }, true);
+  const response = await graphqlQuery(app, { query, variables }, true);
   if (response.data) {
     const graph = response.data.deleteGraphById?.graph;
     if (graph?.id) {

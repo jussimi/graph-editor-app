@@ -5,8 +5,8 @@
   "main": "dist/app.js",
   "scripts": {
     "start": "tsc && NODE_ENV=production node dist/app.js",
-    "dev": "concurrently -r \"npm:lint-code:watch\" \"npm:lint-type:watch\" \"npm:dev-init\" --restart-tries 999 --restart-after 1000",
-    "dev-init": "NODE_ENV=development nodemon -w ./src/*.ts -e ts-node ./src/app.ts",
+    "dev": "concurrently -r \"npm:lint-code:watch\" \"npm:lint-type:watch\" \"npm:dev-init\"",
+    "dev-init": "NODE_ENV=development nodemon -w ./src --ext .ts --exec ts-node ./src/app.ts",
     "lint-type": "tsc --noEmit",
     "lint-type:watch": "tsc -w --preserveWatchOutput --noEmit",
     "lint-code": "eslint --ext .ts --ignore-path .gitignore ./",
@@ -32,6 +32,7 @@
     "typescript": "^3.8.3"
   },
   "dependencies": {
+    "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "postgraphile": "^4.6.0"

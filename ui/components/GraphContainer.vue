@@ -4,7 +4,6 @@
     <div class="mx-auto pa-1 transition-swing elevation-2">
       <GraphCanvas ref="graphCanvas" v-bind="{ nodes: graph.nodes, edges: graph.edges, config, state, actions }" />
     </div>
-    {{ isTrial }}
     <Confirm :open="confirmOpen" :on-cancel="() => (confirmOpen = false)" :on-confirm="deleteGraph" />
   </div>
 </template>
@@ -196,7 +195,6 @@ export default class GraphContainer extends Vue {
   onGraphFromRouteChange(newVal: Graph) {
     // Set the graph to match the graphFromRoute-prop.
     this.graph = newVal.clone();
-    console.log(JSON.stringify(this.graph));
   }
 }
 </script>
