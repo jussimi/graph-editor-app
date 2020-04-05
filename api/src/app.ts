@@ -2,12 +2,9 @@ import express from 'express';
 import cors from 'cors';
 import postgraphile, { PostGraphileOptions } from 'postgraphile';
 
-const {
-  PORT,
-  JWT_SECRET,
-  GRAPH_EDITOR_SCHEMA,
-} = process.env;
+const { PORT, JWT_SECRET, GRAPH_EDITOR_SCHEMA } = process.env;
 
+console.log(process.env.NODE_ENV);
 
 const CONNECTION_STRING = process.env.GRAPHILE_DB_URL;
 console.log(PORT);
