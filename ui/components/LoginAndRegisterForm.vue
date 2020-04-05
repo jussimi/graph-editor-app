@@ -18,14 +18,14 @@
           />
           <v-text-field
             :value="password"
-            :rules="[v => (v && v.length > 5) || 'Length must be at least 6 characters']"
+            :rules="[(v) => (v && v.length > 5) || 'Length must be at least 6 characters']"
             label="Password"
             name="password"
             prepend-icon="mdi-lock"
             type="password"
             @input="setPassword"
           />
-          <p v-if="error" class="mx-auto my-0" style="color: red">
+          <p v-if="error" class="mx-auto my-0" style="color: red;">
             {{ error }}
           </p>
         </v-card-text>

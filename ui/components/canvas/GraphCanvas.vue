@@ -5,7 +5,7 @@
     preserveAspectRatio="xMinYMax meet"
     :viewBox="viewBoxString"
     :style="graphStyles"
-    style="touch-action: none"
+    style="touch-action: none;"
     @pointerover="toggleHovering(true)"
     @pointerleave="toggleHovering(false)"
     @pointermove.prevent="handleMove"
@@ -19,7 +19,7 @@
       dominant-baseline="middle"
       text-anchor="middle"
       font-size="100"
-      style="pointer-events: none"
+      style="pointer-events: none;"
     >
       Choose or create a new graph.
     </text>
@@ -69,8 +69,8 @@ interface Position {
 @Component({
   components: {
     GraphEdge,
-    GraphNode
-  }
+    GraphNode,
+  },
 })
 export default class GraphCanvas extends Vue {
   @Prop({ type: Array, default: () => [] }) nodes!: Node[];
@@ -107,27 +107,27 @@ export default class GraphCanvas extends Vue {
   get elementStyles(): Record<string, any> {
     const cursor = this.dragX != null ? 'grabbing' : 'grab';
     return {
-      cursor: this.downloading ? 'default' : cursor
+      cursor: this.downloading ? 'default' : cursor,
     };
   }
 
   get graphStyles(): Record<string, any> {
     return {
       cursor: this.dragX != null ? 'grabbing' : 'default',
-      'pointer-events': this.disabled ? 'none' : undefined
+      'pointer-events': this.disabled ? 'none' : undefined,
     };
   }
 
   get draggedNode(): Node | undefined {
-    return this.nodes.find(node => node.id === this.draggedNodeId);
+    return this.nodes.find((node) => node.id === this.draggedNodeId);
   }
 
   // TODO: Improve this. Probably quite inefficient.
   get edgesWithPosition(): (Edge & Position)[] {
     const marker = 12; // The marker makes the line a bit longer, which this accounts for.
-    const mappedEdges = this.edges.map(edge => {
-      const source = this.nodes.find(node => node.id === edge.sourceId);
-      const target = this.nodes.find(node => node.id === edge.targetId);
+    const mappedEdges = this.edges.map((edge) => {
+      const source = this.nodes.find((node) => node.id === edge.sourceId);
+      const target = this.nodes.find((node) => node.id === edge.targetId);
       if (source && target) {
         // Two cases for drawing the connector line:
         //  - Undirected:
@@ -144,12 +144,12 @@ export default class GraphCanvas extends Vue {
           x1: source.x,
           y1: source.y,
           x2: target.x - s * dx,
-          y2: target.y - s * dy
+          y2: target.y - s * dy,
         };
       }
       return undefined;
     });
-    return mappedEdges.filter(e => !!e) as (Edge & Position)[];
+    return mappedEdges.filter((e) => !!e) as (Edge & Position)[];
   }
 
   toggleHovering(hovering: boolean) {
@@ -180,7 +180,7 @@ export default class GraphCanvas extends Vue {
             y2: y,
             fill: this.config.fill,
             isDirected: this.config.isDirected,
-            width: this.config.width
+            width: this.config.width,
           };
         }
       }
@@ -200,7 +200,7 @@ export default class GraphCanvas extends Vue {
             color: this.config.color,
             radius: this.config.radius,
             x,
-            y
+            y,
           });
         }
         this.actions.addNode(nodeToAdd);
@@ -218,7 +218,9 @@ export default class GraphCanvas extends Vue {
       const { x, y } = this.getCoordinates(event);
       // Find the nodes that are under the pointer-event.
       // TODO: Figure out which one to choose if there is multiple
-      const nodesUnderPointer = this.nodes.filter(n => Math.abs(n.x - x) <= n.radius && Math.abs(n.y - y) <= n.radius);
+      const nodesUnderPointer = this.nodes.filter(
+        (n) => Math.abs(n.x - x) <= n.radius && Math.abs(n.y - y) <= n.radius
+      );
       const nodeId = nodesUnderPointer[0] && nodesUnderPointer[0].id;
       if (nodeId && nodeId !== this.draggedNode.id) {
         // If the mouseUp was triggered from a node that isn't the draggedNode,
@@ -228,7 +230,7 @@ export default class GraphCanvas extends Vue {
           targetId: nodeId,
           fill: this.config.fill,
           isDirected: this.config.isDirected,
-          width: this.config.width
+          width: this.config.width,
         });
         this.actions.addEdge(newEdge);
       }
@@ -253,7 +255,7 @@ export default class GraphCanvas extends Vue {
           color: this.config.color,
           radius: this.config.radius,
           x,
-          y
+          y,
         });
       }
     }
@@ -268,7 +270,7 @@ export default class GraphCanvas extends Vue {
           y2: y,
           fill: this.config.fill,
           isDirected: this.config.isDirected,
-          width: this.config.width
+          width: this.config.width,
         };
       }
     }

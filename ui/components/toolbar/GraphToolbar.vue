@@ -73,8 +73,8 @@
           <TextInput
             :value="name"
             class="mx-3"
-            :rules="[v => v.length > 2 || 'too-short']"
-            style="max-width: 200px"
+            :rules="[(v) => v.length > 2 || 'too-short']"
+            style="max-width: 200px;"
             @input="updateName($event)"
           />
           <v-btn icon @click="actions.doDelete()">
@@ -97,8 +97,8 @@ import { EditorConfig, EditorState, Node, Edge, EditorActions } from '@/types';
 @Component({
   components: {
     ColorInput,
-    TextInput
-  }
+    TextInput,
+  },
 })
 export default class GraphToolbar extends Vue {
   @Prop({ type: Boolean, required: true }) isTrial!: boolean;
@@ -113,7 +113,7 @@ export default class GraphToolbar extends Vue {
     return [
       { action: 'setLayout', label: 'normalize', disabled: false },
       { action: 'doSave', label: 'save', disabled: this.isTrial },
-      { action: 'downloadSvg', label: 'download', disabled: this.isTrial }
+      { action: 'downloadSvg', label: 'download', disabled: this.isTrial },
     ];
   }
 

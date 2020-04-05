@@ -16,7 +16,7 @@
       font-family="Verdana"
       font-size="50"
       dy=".3em"
-      style="pointer-events: none"
+      style="pointer-events: none;"
       :style="styles"
       :fill="node.color"
     >

@@ -29,7 +29,7 @@ export default class ColorPicker extends Vue {
       width: '30px',
       borderRadius: menu ? '50%' : '4px',
       border: '1px solid black',
-      transition: 'border-radius 200ms ease-in-out'
+      transition: 'border-radius 200ms ease-in-out',
     };
   }
 }

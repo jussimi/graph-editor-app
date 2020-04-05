@@ -10,7 +10,7 @@ export const state = () => ({
   loggedIn: false,
   graphs: [] as Graph[],
   env: {
-    API_PORT: ''
+    API_PORT: '',
   } as Record<string, string>,
 });
 
@@ -18,7 +18,7 @@ type RootState = ReturnType<typeof state>;
 
 export const getters = {
   email: (state: RootState) => state.email,
-  fullEmail: (state: RootState) => state.email
+  fullEmail: (state: RootState) => state.email,
 };
 
 export const mutations = mutationTree(state, {
@@ -35,14 +35,14 @@ export const mutations = mutationTree(state, {
   },
 
   setGraphs(state, newGraphs: (Graph | GraphData)[]) {
-    state.graphs = newGraphs.map(g => new Graph(g));
+    state.graphs = newGraphs.map((g) => new Graph(g));
   },
 
   upsertGraph(state, graph: Graph | GraphData) {
     const { graphs } = state;
     // If graph exists, do update.
-    if (graphs.find(g => g.id === graph.id)) {
-      state.graphs = graphs.map(g => (g.id === graph.id ? new Graph(graph) : g));
+    if (graphs.find((g) => g.id === graph.id)) {
+      state.graphs = graphs.map((g) => (g.id === graph.id ? new Graph(graph) : g));
     }
     // Else insert
     else {
@@ -51,12 +51,12 @@ export const mutations = mutationTree(state, {
   },
 
   removeGraph(state, graphToRemove: Graph | GraphData) {
-    state.graphs = state.graphs.filter(g => g.id !== graphToRemove.id);
+    state.graphs = state.graphs.filter((g) => g.id !== graphToRemove.id);
   },
 
   setEnv(state, env: Record<string, string>) {
     state.env = env;
-  }
+  },
 
   // initialiseStore() {
   //   console.log('initialised');
@@ -66,22 +66,23 @@ export const mutations = mutationTree(state, {
 export const actions = actionTree(
   { state, getters, mutations },
   {
-    resetEmail() {
-      this.app.$accessor.setEmail('a@a.com');
-    },
-
-    async nuxtServerInit(_vuexContext, _nuxtContext: Context) {
-      // process.env is not available on client side -> save it to store on 
+    nuxtServerInit(_vuexContext, _nuxtContext: Context) {
+      // process.env is not available on client side -> save it to store on
       const { API_PORT = '' } = process.env;
       this.app.$accessor.setEnv({ API_PORT });
     },
 
+    resetState() {
+      this.app.$accessor.setPersonId(0);
+      this.app.$accessor.setEmail('');
+      this.app.$accessor.setGraphs([]);
+      this.app.$accessor.setLoggedIn(false);
+    },
+
     logout({ state }) {
       if (state.loggedIn) {
-        this.app.$accessor.setEmail('');
-        this.app.$accessor.setGraphs([]);
-        this.app.$accessor.setLoggedIn(false);
-        this.app.$cookies.remove('authToken');
+        this.app.$accessor.resetState(undefined);
+        this.app.$cookies.remove('authToken', { sameSite: true });
         this.$router.push('/');
       }
     },
@@ -92,7 +93,7 @@ export const actions = actionTree(
         console.log(error);
       } else if (data?.authToken) {
         const { authToken } = data;
-        this.app.$cookies.set('authToken', authToken);
+        this.app.$cookies.set('authToken', authToken, { sameSite: true });
         await this.app.$accessor.fetchData(undefined);
         this.$router.push('/graphs');
         return true;
@@ -116,7 +117,7 @@ export const actions = actionTree(
         console.log(error);
       } else if (data?.authToken) {
         const { authToken } = data;
-        this.app.$cookies.set('authToken', authToken);
+        this.app.$cookies.set('authToken', authToken, { sameSite: true });
         await this.app.$accessor.fetchData(undefined);
         this.$router.push('/graphs');
         return true;
@@ -124,16 +125,17 @@ export const actions = actionTree(
       return false;
     },
 
-    async fetchData() {
+    async fetchData({ state }) {
       const { data, error } = await queries.fetchAllResources(this.app);
       if (error) {
         console.log(error);
       } else if (data?.personId) {
         const { personId, email, graphs } = data;
+        const tempGraphs = state.graphs.filter((g) => g.isTemp);
         this.app.$accessor.setLoggedIn(true);
         this.app.$accessor.setPersonId(personId);
         this.app.$accessor.setEmail(email);
-        this.app.$accessor.setGraphs(graphs);
+        this.app.$accessor.setGraphs([...graphs, ...tempGraphs]);
       }
     },
 
@@ -171,7 +173,7 @@ export const actions = actionTree(
         this.app.$accessor.removeGraph(graph);
         this.$router.push('/graphs');
       }
-    }
+    },
   }
 );
 
@@ -179,5 +181,5 @@ export const accessorType = getAccessorType({
   // actions,
   getters,
   mutations,
-  state
+  state,
 });

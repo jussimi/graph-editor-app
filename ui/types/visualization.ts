@@ -22,11 +22,11 @@ export const getForceDirectedLayout = (initialGraph: Graph | GraphData, width: n
   };
   // Place nodes in random positions
   const nodes = graph.nodes.map(
-    n =>
+    (n) =>
       new Node({
         ...n,
         x: width / 4 + (Math.random() * width) / 2,
-        y: height / 4 + (Math.random() * height) / 2
+        y: height / 4 + (Math.random() * height) / 2,
       })
   );
   const { edges } = graph;
@@ -53,8 +53,8 @@ export const getForceDirectedLayout = (initialGraph: Graph | GraphData, width: n
     }
     // Count attraction forces
     for (const edge of edges) {
-      const source = nodes.find(n => n.id === edge.sourceId);
-      const target = nodes.find(n => n.id === edge.targetId);
+      const source = nodes.find((n) => n.id === edge.sourceId);
+      const target = nodes.find((n) => n.id === edge.targetId);
       if (source && target) {
         const sourceDisp = nodeDisplacementMap[source.id];
         const targetDisp = nodeDisplacementMap[target.id];
@@ -65,11 +65,11 @@ export const getForceDirectedLayout = (initialGraph: Graph | GraphData, width: n
         if (distance > 0) {
           nodeDisplacementMap[source.id] = {
             dispX: sourceDisp.dispX + (dx / distance) * force,
-            dispY: sourceDisp.dispY + (dy / distance) * force
+            dispY: sourceDisp.dispY + (dy / distance) * force,
           };
           nodeDisplacementMap[target.id] = {
             dispX: targetDisp.dispX - (dx / distance) * force,
-            dispY: targetDisp.dispY - (dy / distance) * force
+            dispY: targetDisp.dispY - (dy / distance) * force,
           };
         }
       }

@@ -136,7 +136,7 @@ const fetchAllResources = async (app: NuxtAppOptions) => {
       data = {
         personId: person.id,
         email: person.email,
-        graphs: person.graphsByPersonId.nodes || []
+        graphs: person.graphsByPersonId.nodes || [],
       };
     }
   } else if (response.error) {
@@ -162,7 +162,7 @@ const createGraph = async (app: NuxtAppOptions, personId: number, graph: Graph |
   `;
   const variables = {
     edges,
-    nodes
+    nodes,
   };
   console.log(query);
   let data: { graph: GraphData } | undefined;
@@ -172,7 +172,7 @@ const createGraph = async (app: NuxtAppOptions, personId: number, graph: Graph |
     const graph = response.data.createGraph?.graph;
     if (graph) {
       data = {
-        graph
+        graph,
       };
     }
   } else if (response.error) {
@@ -198,7 +198,7 @@ const updateGraph = async (app: NuxtAppOptions, graph: Graph | GraphData) => {
   `;
   const variables = {
     edges,
-    nodes
+    nodes,
   };
   let data: { graph: GraphData } | undefined;
   let error: any;
@@ -207,7 +207,7 @@ const updateGraph = async (app: NuxtAppOptions, graph: Graph | GraphData) => {
     const graph = response.data.updateGraphById?.graph;
     if (graph) {
       data = {
-        graph
+        graph,
       };
     }
   } else if (response.error) {
@@ -235,7 +235,7 @@ const deleteGraph = async (app: NuxtAppOptions, graph: Graph | GraphData) => {
     const graph = response.data.deleteGraphById?.graph;
     if (graph?.id) {
       data = {
-        success: true
+        success: true,
       };
     }
   } else if (response.error) {
@@ -252,5 +252,5 @@ export const queries = {
   createGraph,
   updateGraph,
   deleteGraph,
-  removePerson
+  removePerson,
 };
