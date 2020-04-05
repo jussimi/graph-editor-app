@@ -6,13 +6,13 @@ const authMiddleware = async (context: Context) => {
   const authToken = context.app.$cookies.get('authToken');
   const isLoggedIn = context.app.$accessor.loggedIn;
   const graphIdFromRoute = Number.parseInt(context.route.params.graphId, 10);
-  const graphs = context.app.$accessor.graphs;
   if (authToken) {
     if (!isLoggedIn) {
       await context.app.$accessor.fetchData(undefined);
     }
     // Check if the initial fetch went through -> logged in should be set as true.
     if (context.app.$accessor.loggedIn) {
+      const graphs = context.app.$accessor.graphs;
       if (!graphs.find((g) => g.id === graphIdFromRoute)) {
         console.log('graph not found');
         if (graphs[0]) {
@@ -30,11 +30,13 @@ const authMiddleware = async (context: Context) => {
       }
     } else {
       // Remove the authToken since it didn't work.
+      console.log('remove cookie since it was not valid');
       context.app.$accessor.resetState(undefined);
       context.app.$cookies.remove('authToken', { sameSite: true });
     }
   }
   // Not logged in.
+  const graphs = context.app.$accessor.graphs;
   const shouldRedirect = graphIdFromRoute !== 1 || graphs[0]?.id !== graphIdFromRoute;
   if (shouldRedirect) {
     console.log('REDIRECT: not logged in');

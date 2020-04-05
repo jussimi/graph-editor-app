@@ -52,6 +52,7 @@ push:
     - docker push ${CI_REGISTRY_IMAGE}/migrate:latest
     - docker push ${CI_REGISTRY_IMAGE}/api:latest
     - docker push ${CI_REGISTRY_IMAGE}/ui:latest
+
 deploy:
   stage: deploy
   only:
