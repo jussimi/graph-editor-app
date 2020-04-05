@@ -13,8 +13,8 @@ import GraphEditorContainer from '@/components/GraphContainer.vue';
 
 @Component({
   components: {
-    GraphEditorContainer
-  }
+    GraphEditorContainer,
+  },
 })
 export default class IndexPage extends Vue {}
 </script>

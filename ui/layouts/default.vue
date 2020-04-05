@@ -69,29 +69,29 @@ import { Graph } from '../types';
 
 @Component({
   components: {
-    LoginAndRegisterForm
+    LoginAndRegisterForm,
   },
-  middleware: 'authAndRedirect'
+  middleware: 'authAndRedirect',
 })
 export default class DefaultLayout extends Vue {
   drawer = false;
 
   loginModal = {
     type: 'login',
-    open: false
+    open: false,
   };
 
   cruds = [
     ['Create', 'add'],
     ['Read', 'insert_drive_file'],
     ['Update', 'update'],
-    ['Delete', 'delete']
+    ['Delete', 'delete'],
   ];
 
   openModal(type: string) {
     this.loginModal = {
       open: true,
-      type
+      type,
     };
   }
 

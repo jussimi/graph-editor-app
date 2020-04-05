@@ -1,9 +1,10 @@
 <template>
   <div>
     <GraphToolbar v-bind="{ name: graph.name, config, state, actions, isTrial }" />
-    <div :class="`elevation-${2}`" class="mx-auto pa-1 transition-swing">
+    <div class="mx-auto pa-1 transition-swing elevation-2">
       <GraphCanvas ref="graphCanvas" v-bind="{ nodes: graph.nodes, edges: graph.edges, config, state, actions }" />
     </div>
+    {{ isTrial }}
     <Confirm :open="confirmOpen" :on-cancel="() => (confirmOpen = false)" :on-confirm="deleteGraph" />
   </div>
 </template>
@@ -26,8 +27,8 @@ import { Graph, Node, Edge, EditorConfig, EditorState, Selected, EditorActions }
   components: {
     GraphToolbar,
     GraphCanvas,
-    Confirm
-  }
+    Confirm,
+  },
 })
 export default class GraphContainer extends Vue {
   @Prop({ type: Object, required: true }) graphFromRoute!: Graph;
@@ -48,7 +49,7 @@ export default class GraphContainer extends Vue {
     color: '#ffffff',
     isDirected: false,
     radius: 50,
-    width: 5
+    width: 5,
   };
 
   downloading = false;
@@ -59,7 +60,7 @@ export default class GraphContainer extends Vue {
 
   selected: Selected = {
     type: null,
-    value: null
+    value: null,
   };
 
   get state(): EditorState {
@@ -73,14 +74,16 @@ export default class GraphContainer extends Vue {
   }
 
   get isTrial(): boolean {
-    return !this.isLoggedIn && !this.$route.params.graphId;
+    return !this.isLoggedIn && !!this.graph.isTemp;
   }
 
   get isLoggedIn(): boolean {
     return this.$accessor.loggedIn;
   }
 
+  // Group actions to a function so that they can be passed down as a single prop.
   get actions(): EditorActions {
+    console.log('actions changed');
     return {
       setConfig: (config: EditorConfig) => {
         this.config = config;
@@ -115,8 +118,7 @@ export default class GraphContainer extends Vue {
         this.graph.setLayout(this.size * this.ratio, this.size);
       },
       downloadSvg: () => {
-        console.log('download');
-        // this.downloadSvg();
+        this.downloadSvg();
       },
       doDelete: () => {
         this.confirmOpen = true;
@@ -127,8 +129,7 @@ export default class GraphContainer extends Vue {
         } else {
           this.$accessor.updateGraph(this.graph);
         }
-        console.log('doSave here');
-      }
+      },
     };
   }
 
@@ -139,7 +140,7 @@ export default class GraphContainer extends Vue {
   setSelected(type?: 'node' | 'edge', value?: Node | Edge) {
     this.selected = {
       type: type || null,
-      value: value || null
+      value: value || null,
     };
   }
 
@@ -161,10 +162,9 @@ export default class GraphContainer extends Vue {
     // This way we get rid of unnesseccary classes in the Nodes and Edges. (i.e cursor and selected-outline)
     this.$nextTick(() => {
       const svg = (this.$refs.graphCanvas as Vue).$el as HTMLOrSVGImageElement;
-      console.log(svg);
       const svgString = new XMLSerializer().serializeToString(svg);
       const link = document.createElement('a');
-      link.download = `Graph-${Date.now()}.svg`;
+      link.download = `${this.graph.name}_${Date.now()}.svg`;
       link.href = `data:image/svg+xml;utf8,${encodeURIComponent(svgString)}`;
       link.click();
       //
@@ -194,7 +194,9 @@ export default class GraphContainer extends Vue {
 
   @Watch('graphFromRoute', { immediate: true })
   onGraphFromRouteChange(newVal: Graph) {
+    // Set the graph to match the graphFromRoute-prop.
     this.graph = newVal.clone();
+    console.log(JSON.stringify(this.graph));
   }
 }
 </script>

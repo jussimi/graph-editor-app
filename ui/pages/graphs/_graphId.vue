@@ -15,13 +15,13 @@ import GraphEditorContainer from '@/components/GraphContainer.vue';
 
 @Component({
   components: {
-    GraphEditorContainer
-  }
+    GraphEditorContainer,
+  },
 })
 export default class GraphPage extends Vue {
   get graphByRoute(): Graph | undefined {
     const graphId = Number.parseInt(this.$route.params.graphId, 10);
-    const graph = this.$accessor.graphs.find(g => g.id === graphId);
+    const graph = this.$accessor.graphs.find((g) => g.id === graphId);
     return graph ? new Graph(graph) : undefined; // Clone graph so that the reference is changed.
   }
 }
