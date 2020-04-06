@@ -1,10 +1,5 @@
 version: "3.7"
 services:
-  postgres:
-    image: ${CI_REGISTRY_IMAGE-local}/postgres:latest
-    expose:
-      - 5432
-    env_file: env-production
   migrate:
     image: ${CI_REGISTRY_IMAGE-local}/migrate:${CI_COMMIT_SHORT_SHA-latest}
     command: up
