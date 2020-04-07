@@ -17,8 +17,6 @@ if [ "$FIRST_COMMAND" = "up" -o "$FIRST_COMMAND" = "down" -o "$FIRST_COMMAND" = 
   done
 fi
 
-echo "connection string $OWNER_DB_URL"
-
 migrate -path /$DATA_DIR/tmp \
   -verbose \
   -database $OWNER_DB_URL \
