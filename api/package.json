@@ -2,23 +2,27 @@
   "name": "api",
   "version": "1.0.0",
   "description": "",
-  "main": "dist/app.js",
+  "main": "dist/index.js",
   "scripts": {
-    "start": "tsc && NODE_ENV=production node dist/app.js",
+    "start": "tsc && NODE_ENV=production node dist/index.js",
     "dev": "concurrently -r \"npm:lint-code:watch\" \"npm:lint-type:watch\" \"npm:dev-init\"",
-    "dev-init": "NODE_ENV=development nodemon -w ./src --ext .ts --exec ts-node ./src/app.ts",
+    "dev-init": "NODE_ENV=development nodemon -w ./src --ext .ts --exec ts-node ./src/index.ts",
     "lint-type": "tsc --noEmit",
     "lint-type:watch": "tsc -w --preserveWatchOutput --noEmit",
     "lint-code": "eslint --ext .ts --ignore-path .gitignore ./",
     "lint-code:watch": "esw --ext .ts -w --ignore-path .gitignore ./",
     "lint-code:fix": "eslint --ext .ts --fix --ignore-path .gitignore ./",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/cors": "^2.8.6",
     "@types/express": "^4.17.3",
+    "@types/express-rate-limit": "^5.0.0",
+    "@types/jest": "^25.2.1",
+    "@types/supertest": "^2.0.8",
     "@typescript-eslint/eslint-plugin": "^2.24.0",
     "@typescript-eslint/parser": "^2.24.0",
     "concurrently": "^5.1.0",
@@ -26,8 +30,11 @@
     "eslint-config-prettier": "^6.10.0",
     "eslint-plugin-prettier": "^3.1.2",
     "eslint-watch": "^6.0.1",
+    "jest": "^25.2.7",
     "nodemon": "^2.0.2",
     "prettier": "^1.19.1",
+    "supertest": "^4.0.2",
+    "ts-jest": "^25.3.1",
     "ts-node": "^8.7.0",
     "typescript": "^3.8.3"
   },
@@ -35,6 +42,7 @@
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
+    "express-rate-limit": "^5.1.1",
     "postgraphile": "^4.6.0"
   }
 }
