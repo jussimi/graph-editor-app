@@ -8,4 +8,9 @@ services:
   migrate:
     entrypoint: ["./test.sh"]
     depends_on:
-      - postgres
+      - postgres  
+  api:
+    command: npm run test
+    volumes:
+      - ./api:/usr/src/app
+      
