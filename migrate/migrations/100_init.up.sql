@@ -169,7 +169,7 @@ DECLARE
   account ${GRAPH_EDITOR_SCHEMA}_private.person_account;
 BEGIN
   SELECT a.* INTO account
-  FROM ${GRAPH_EDITOR_SCHEMA}.account a, ${GRAPH_EDITOR_SCHEMA}.person p
+  FROM ${GRAPH_EDITOR_SCHEMA}_private.person_account a, ${GRAPH_EDITOR_SCHEMA}.person p
   WHERE p.email = $1 AND p.id = a.person_id;
 
   IF (account.person_id != person_id_from_jwt) THEN

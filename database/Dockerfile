@@ -1,4 +1,18 @@
+FROM postgres:12.2 as builder
+
+RUN apt-get update \
+    && apt-get install -y build-essential gettext-base git-core libv8-dev curl postgresql-server-dev-$PG_MAJOR \
+    && rm -rf /var/lib/apt/lists/*
+
+# install pgtap
+RUN git clone git://github.com/theory/pgtap.git \
+    && cd pgtap \
+    && make \
+    && make install
+
 FROM postgres:12.2
+
+COPY --from=builder /usr/share/postgresql/12/extension/pgtap* /usr/share/postgresql/12/extension/
 
 RUN apt-get update && apt-get install gettext -y
 

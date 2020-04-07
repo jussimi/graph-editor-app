@@ -8,7 +8,7 @@ services:
   migrate:
     build: ./migrate
     env_file: env-development
-    entrypoint: ["sh", "./dev.sh"]
+    entrypoint: ["./dev.sh"]
     depends_on:
       - postgres
   api:
