@@ -62,10 +62,10 @@ const logger: RequestHandler = (req, _res, next) => {
 
 const errorHandler: ErrorRequestHandler = (err: Error, _req, res, next) => {
   if (err.message.includes('query not allowed')) {
-    res.status(400).send(err.message);
+    res.status(400).send({ error: err.message });
   }
   if (err.message.includes('Not allowed by CORS')) {
-    res.status(401).send(err.message);
+    res.status(401).send({ error: err.message });
   }
   next();
 };

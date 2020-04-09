@@ -12,7 +12,9 @@
     "lint-code": "eslint --ext .ts --ignore-path .gitignore ./",
     "lint-code:watch": "esw --ext .ts -w --ignore-path .gitignore ./",
     "lint-code:fix": "eslint --ext .ts --fix --ignore-path .gitignore ./",
-    "test": "jest"
+    "test": "jest",
+    "test:unit": "jest --testPathPattern=unit/*",
+    "test:integration": "jest --testPathPattern=integration/* --bail"
   },
   "keywords": [],
   "author": "",
@@ -43,6 +45,7 @@
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "express-rate-limit": "^5.1.1",
+    "graphql-tag": "^2.10.3",
     "postgraphile": "^4.6.0"
   }
 }

@@ -1,6 +1,10 @@
+/**
+ * The ui makes requests with the keys of this object. Anything else is not permitted.
+ * For example a request body colud be like body = { query: 'registerPerson', variables: { email, password } }
+ */
 export const queryWhiteListMap: Record<string, string> = {
   fetchAllResources: `
-    {
+    query fetchAllResources {
       allPeople(orderBy:ID_ASC, last:1) {
         nodes {
           id
@@ -18,28 +22,28 @@ export const queryWhiteListMap: Record<string, string> = {
     }
   `,
   registerPerson: `
-    mutation($email: String!, $password: String!) {
+    mutation registerPerson($email: String!, $password: String!) {
       registerPerson(input: { email: $email, password: $password }) {
         authToken
       }
     }
   `,
   loginPerson: `
-    mutation($email: String!, $password: String!) {
+    mutation loginPerson($email: String!, $password: String!) {
       authenticate(input: { email: $email, password: $password }) {
         authToken
       }
     }
   `,
   removePerson: `
-    mutation($email: String!, $password: String!) {
+    mutation removePerson($email: String!, $password: String!) {
       removePerson(input: { email: $email, password: $password }) {
         boolean
       }
     }
   `,
   createGraph: `
-    mutation($edges: JSON!, $nodes: JSON!, $personId: Int!, $name: String!) {
+    mutation createGraph($edges: JSON!, $nodes: JSON!, $personId: Int!, $name: String!) {
       createGraph(input: { graph: { personId: $personId, name: $name, nodes: $nodes, edges: $edges } }) {
         graph {
           id
@@ -51,7 +55,7 @@ export const queryWhiteListMap: Record<string, string> = {
     }
   `,
   deleteGraphById: `
-    mutation($id: Int!) {
+    mutation deleteGraphById($id: Int!) {
       deleteGraphById(input: { id: $id }) {
         graph {
           id
@@ -60,7 +64,7 @@ export const queryWhiteListMap: Record<string, string> = {
     }
   `,
   updateGraphById: `
-    mutation($id: Int!, $edges: JSON!, $nodes: JSON!, $name: String!) {
+    mutation updateGraphById($id: Int!, $edges: JSON!, $nodes: JSON!, $name: String!) {
       updateGraphById(input: { id: $id, graphPatch: { edges: $edges, nodes: $nodes, name: $name } }) {
         graph {
           id

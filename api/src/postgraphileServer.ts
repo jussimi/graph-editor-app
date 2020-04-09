@@ -24,6 +24,7 @@ const postgraphileOptions = {
   //   // TODO: customise condition!
   //   return true;
   // },
+  disableQueryLog: process.env.NODE_ENV !== 'development',
   enableQueryBatching: true,
   legacyRelations: 'omit',
   enableCors: true,
