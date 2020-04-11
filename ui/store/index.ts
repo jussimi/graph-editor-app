@@ -1,7 +1,7 @@
 import { getAccessorType, mutationTree, actionTree } from 'nuxt-typed-vuex';
 import { Context } from '@nuxt/types';
 // import { NuxtAxiosInstance } from '@nuxtjs/axios';
-import { queries } from '@/store-helpers/queries';
+import { queries } from './queries';
 import { Graph, GraphData } from '@/types';
 
 export const state = () => ({

@@ -35,26 +35,31 @@
       <v-row align="center">
         <template v-if="config.mode === 'node'">
           <TextInput
-            id="node-radius-field"
+            :cy="'node-radius-field'"
             :value="config.radius"
             class="t-input mx-3"
             type="number"
             @input="setConfig({ radius: $event })"
           />
-          <ColorInput id="node-fill-field" :value="config.fill" class="mx-3" @input="setConfig({ fill: $event })" />
-          <ColorInput id="node-color-field" :value="config.color" class="mx-3" @input="setConfig({ color: $event })" />
+          <ColorInput :cy="'node-fill-field'" :value="config.fill" class="mx-3" @input="setConfig({ fill: $event })" />
+          <ColorInput
+            :cy="'node-color-field'"
+            :value="config.color"
+            class="mx-3"
+            @input="setConfig({ color: $event })"
+          />
         </template>
         <template v-else-if="config.mode === 'edge'">
           <TextInput
-            id="edge-width-field"
+            :cy="'edge-width-field'"
             :value="config.width"
             class="t-input mx-3"
             type="number"
             @input="setConfig({ width: $event })"
           />
-          <ColorInput id="edge-fill-field" :value="config.fill" class="mx-3" @input="setConfig({ fill: $event })" />
+          <ColorInput :cy="'edge-fill-field'" :value="config.fill" class="mx-3" @input="setConfig({ fill: $event })" />
           <v-switch
-            id="edge-directed-toggle"
+            :cy="'edge-directed-toggle'"
             :input-value="config.isDirected"
             class="mx-3"
             hide-details
@@ -63,73 +68,73 @@
         </template>
         <template v-else-if="selectedNode">
           <TextInput
-            id="node-radius-field"
+            :cy="'node-radius-field'"
             :value="selectedNode.radius"
             class="t-input mx-3"
             type="number"
             @input="updateNode({ radius: $event })"
           />
           <TextInput
-            id="node-content-field"
+            :cy="'node-content-field'"
             :value="selectedNode.content"
             class="t-input mx-3"
             @input="updateNode({ content: $event })"
           />
           <ColorInput
-            id="node-fill-field"
+            :cy="'node-fill-field'"
             :value="selectedNode.fill"
             class="mx-3"
             @input="updateNode({ fill: $event })"
           />
           <ColorInput
-            id="node-color-field"
+            :cy="'node-color-field'"
             :value="selectedNode.color"
             class="mx-3"
             @input="updateNode({ color: $event })"
           />
-          <v-btn id="node-delete-button" icon @click="actions.deleteNode(selectedNode)">
+          <v-btn data-cy="node-delete-button" icon @click="actions.deleteNode(selectedNode)">
             <v-icon>mdi-delete</v-icon>
           </v-btn>
         </template>
         <template v-else-if="selectedEdge">
           <TextInput
-            id="edge-width-field"
+            :cy="'edge-width-field'"
             :value="selectedEdge.width"
             class="t-input mx-3"
             type="number"
             @input="updateEdge({ width: $event })"
           />
           <ColorInput
-            id="edge-fill-field"
+            :cy="'edge-fill-field'"
             :value="selectedEdge.fill"
             class="mx-3"
             @input="updateEdge({ fill: $event })"
           />
           <v-switch
-            id="edge-directed-toggle"
+            data-cy="edge-directed-toggle"
             :input-value="selectedEdge.isDirected"
             class="mx-3"
             hide-details
             @change="updateEdge({ isDirected: !!$event })"
           ></v-switch>
-          <v-btn id="edge-delete-button" icon @click="actions.deleteEdge(selectedEdge)">
+          <v-btn data-cy="edge-delete-button" icon @click="actions.deleteEdge(selectedEdge)">
             <v-icon>mdi-delete</v-icon>
           </v-btn>
         </template>
         <template v-else-if="!isTrial">
           <TextInput
-            id="graph-name-field"
+            :cy="'graph-name-field'"
             :value="name"
             class="mx-3"
             :rules="[(v) => v.length > 2 || 'too-short']"
             style="max-width: 200px;"
             @input="updateName($event)"
           />
-          <v-btn id="graph-delete-button" icon @click="actions.doDelete()">
+          <v-btn data-cy="graph-delete-button" icon @click="actions.doDelete()">
             <v-icon>mdi-delete</v-icon>
           </v-btn>
         </template>
-        <div v-else id="trial-graph-text" class="mx-2">Login or register to save and download graphs</div>
+        <div v-else data-cy="trial-graph-text" class="mx-2">Login or register to save and download graphs</div>
       </v-row>
     </template>
   </v-toolbar>
