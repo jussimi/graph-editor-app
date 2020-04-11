@@ -5,7 +5,6 @@ export default class RootPage {
   }
 
   open(): void {
-    const path = 'http://localhost:3000';
-    cy.visit(path);
+    cy.visit('/');
   }
 }
