@@ -82,7 +82,6 @@ export default class GraphContainer extends Vue {
 
   // Group actions to a function so that they can be passed down as a single prop.
   get actions(): EditorActions {
-    console.log('actions changed');
     return {
       setConfig: (config: EditorConfig) => {
         this.config = config;

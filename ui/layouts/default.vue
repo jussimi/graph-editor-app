@@ -40,11 +40,11 @@
       <v-toolbar-title>Application</v-toolbar-title>
       <v-spacer></v-spacer>
       <template v-if="!loggedIn">
-        <v-btn @click="openModal('login')">Login</v-btn>
-        <v-btn @click="openModal('register')">Register</v-btn>
+        <v-btn id="login-modal-activator" @click="openModal('login')">Login</v-btn>
+        <v-btn id="register-modal-activator" @click="openModal('register')">Register</v-btn>
       </template>
       <template v-else>
-        <v-btn @click="logout">Logout</v-btn>
+        <v-btn id="logout-button" @click="logout">Logout</v-btn>
       </template>
     </v-app-bar>
 

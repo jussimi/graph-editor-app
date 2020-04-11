@@ -82,7 +82,7 @@ export const actions = actionTree(
     logout({ state }) {
       if (state.loggedIn) {
         this.app.$accessor.resetState(undefined);
-        this.app.$cookies.remove('authToken', { sameSite: true });
+        this.app.$cookies.remove('authToken', { path: '/', sameSite: true });
         this.$router.push('/');
       }
     },
@@ -93,7 +93,7 @@ export const actions = actionTree(
         console.log(error);
       } else if (data?.authToken) {
         const { authToken } = data;
-        this.app.$cookies.set('authToken', authToken, { sameSite: true });
+        this.app.$cookies.set('authToken', authToken, { path: '/', sameSite: true });
         await this.app.$accessor.fetchData(undefined);
         this.$router.push('/graphs');
         return true;
@@ -117,7 +117,7 @@ export const actions = actionTree(
         console.log(error);
       } else if (data?.authToken) {
         const { authToken } = data;
-        this.app.$cookies.set('authToken', authToken, { sameSite: true });
+        this.app.$cookies.set('authToken', authToken, { path: '/', sameSite: true });
         await this.app.$accessor.fetchData(undefined);
         this.$router.push('/graphs');
         return true;
