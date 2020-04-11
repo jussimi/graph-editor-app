@@ -83,7 +83,7 @@ const removePerson = async (app: NuxtAppOptions, email: string, password: string
   const variables = { email, password };
   let data: { success: boolean } | undefined;
   let error: any;
-  const response = await graphqlQuery(app, { query, variables });
+  const response = await graphqlQuery(app, { query, variables }, true);
   if (response.data?.removePerson) {
     const success = response.data.removePerson.boolean;
     data = { success };
