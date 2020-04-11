@@ -32,7 +32,7 @@ const authMiddleware = async (context: Context) => {
       // Remove the authToken since it didn't work.
       console.log('remove cookie since it was not valid');
       context.app.$accessor.resetState(undefined);
-      context.app.$cookies.remove('authToken', { sameSite: true });
+      context.app.$cookies.remove('authToken', { path: '/', sameSite: true });
     }
   }
   // Not logged in.

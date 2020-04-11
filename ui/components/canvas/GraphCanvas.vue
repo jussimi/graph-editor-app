@@ -1,5 +1,6 @@
 <template>
   <svg
+    id="graph-editor-canvas"
     ref="graph"
     width="100%"
     preserveAspectRatio="xMinYMax meet"

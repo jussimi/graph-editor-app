@@ -1,6 +1,8 @@
 <template>
   <svg
     :key="`node-${node.id}`"
+    class="graph-editor-node"
+    :class="{ selected: isSelected }"
     :x="node.x - radius"
     :y="node.y - radius"
     :width="2 * radius"
