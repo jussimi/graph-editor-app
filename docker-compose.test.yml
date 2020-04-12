@@ -7,9 +7,9 @@ services:
       # This should maybe come from an env-file.
       CYPRESS_BASE_URL: http://ui:3000
       ## DEBUG: cypress:server:browsers:electron
-    volumes:
-      - ./e2e/cypress:/app/cypress
-      - ./e2e/cypress.json:/app/cypress.json
+    #volumes:
+    #  - ./e2e/cypress:/app/cypress
+    #  - ./e2e/cypress.json:/app/cypress.json
     command: ["./wait-for-it.sh", "ui:3000", "--", "npx", "cypress", "run"]
     depends_on:
       - ui
