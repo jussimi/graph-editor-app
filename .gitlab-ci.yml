@@ -5,8 +5,7 @@ stages:
   - deploy
   
 build:
-  # NOTE: We don't want to build the postgres image every time, since it shouldn't change.
-  #  - could be smart to move it to its own repo, but we'll keep it here for now.
+  # Build the docker images.
   stage: build
   image: 
     name: docker/compose:1.25.4
@@ -21,6 +20,7 @@ build:
     - docker-compose -f docker-compose.yml -f docker-compose.test.yml -f docker-compose.preview.yml push
 
 test:
+  # Run the test script.
   stage: test
   image: 
     name: docker/compose:1.25.4
