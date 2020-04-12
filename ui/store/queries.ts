@@ -8,9 +8,16 @@ const graphqlQuery = async (
 ) => {
   const { API_PORT } = app.$accessor.env;
   let url;
+
   if (process.client) {
     const { hostname, protocol } = window.location;
     url = `${protocol}//${hostname}:${API_PORT}/graphql`;
+    // If running Cypress from inside docker, the hostname gets set as 'ui'.
+    // Thus we change the api-url to match the url inside the docker-network.
+    const isCypress = typeof (window as any).Cypress !== 'undefined';
+    if (isCypress && hostname === 'ui') {
+      url = `http://api:${API_PORT}/graphql`;
+    }
   } else {
     // When called from server side, the call is made from within the docker container.
     // Thus we change the api-url to the url in the docker-network.
@@ -27,6 +34,7 @@ const graphqlQuery = async (
   let data: any;
   let error: any;
   try {
+    console.log('MAKING API CALL', query, url);
     const response = await app.$axios.$post(url, { query, variables }, { headers });
     if (response.errors) {
       error = response.errors[0];

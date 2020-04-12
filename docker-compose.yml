@@ -3,12 +3,12 @@ services:
   migrate:
     image: ${CI_REGISTRY_IMAGE-local}/migrate:${CI_COMMIT_SHORT_SHA-latest}
     command: up
-    env_file: env-production
+    env_file: .env
   api:
     image: ${CI_REGISTRY_IMAGE-local}/api:${CI_COMMIT_SHORT_SHA-latest}
     ports:
       - "4000:4000"
-    env_file: env-production
+    env_file: .env
     environment:
       PORT: 4000
       UI_PORT: 3000
