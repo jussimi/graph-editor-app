@@ -26,7 +26,7 @@ if [ $EXIT_CODE != 0 ]; then
 fi
 
 # Test end-to-end tests.
-#$COMPOSE up -d postgres migrate api ui
+$COMPOSE up -d postgres migrate api ui
 $COMPOSE run --rm e2e; EXIT_CODE=$?
 if [ $EXIT_CODE != 0 ]; then
   echo "End-to-end tests failed with code $EXIT_CODE."
