@@ -1,6 +1,7 @@
 version: "3.7"
 services:
   e2e:
+    image: ${CI_REGISTRY_IMAGE-local}/e2e:${CI_COMMIT_SHORT_SHA-latest}
     build: ./e2e
     environment:
       # This should maybe come from an env-file.
@@ -10,3 +11,5 @@ services:
       - ./e2e/cypress:/app/cypress
       - ./e2e/cypress.json:/app/cypress.json
     command: ["./wait-for-it.sh", "ui:3000", "--", "npx", "cypress", "run"]
+    depends_on:
+      - ui
