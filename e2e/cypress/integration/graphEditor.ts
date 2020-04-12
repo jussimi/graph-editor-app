@@ -81,14 +81,14 @@ describe('Graph editor actions', () => {
 
     beforeEach(() => {
       editorPage.open();
-      cy.window().then((win) => {
-        win.store.dispatch('register', { email, password });
+      cy.window().then(async (win) => {
+        await win.store.dispatch('register', { email, password });
       });
     });
     afterEach(() => {
       // Remove the person so that the tests can be run again.
-      cy.window().then((win) => {
-        win.store.dispatch('unRegister', { email, password });
+      cy.window().then(async (win) => {
+        await win.store.dispatch('unRegister', { email, password });
       });
     });
 

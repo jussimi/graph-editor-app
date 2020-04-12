@@ -1,16 +1,12 @@
 version: "3.7"
 services:
-  postgres:
-    build: ./database
-    expose:
-      - 5432
-    env_file: env-production
-  migrate:
-    entrypoint: ["./test.sh"]
-    depends_on:
-      - postgres  
-  api:
-    command: npm run test
+  e2e:
+    build: ./e2e
+    environment:
+      # This should maybe come from an env-file.
+      CYPRESS_BASE_URL: http://ui:3000
+      ## DEBUG: cypress:server:browsers:electron
     volumes:
-      - ./api:/usr/src/app
-      
+      - ./e2e/cypress:/app/cypress
+      - ./e2e/cypress.json:/app/cypress.json
+    command: ["./wait-for-it.sh", "ui:3000", "--", "npx", "cypress", "run"]

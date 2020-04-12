@@ -1,0 +1,18 @@
+version: "3.7"
+services:
+  postgres:
+    build: ./database
+    env_file: .env
+    ports:
+      - ${DB_PORT}
+  migrate:
+    build: ./migrate
+    entrypoint: ["./run.sh"]
+    depends_on:
+      - postgres
+  api:
+    build: ./api
+    command: npm start
+  ui:
+    build: ./ui
+    command: npm start

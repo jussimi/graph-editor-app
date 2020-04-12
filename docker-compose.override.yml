@@ -2,12 +2,13 @@ version: "3.7"
 services:
   postgres:
     build: ./database
-    env_file: env-development
+    env_file: .env
     ports:
-      - "5432:5432"
+      - "${DB_PORT}:${DB_PORT}"
   migrate:
     build: ./migrate
-    env_file: env-development
+    volumes:
+      - ./migrate/src:/src
     entrypoint: ["./dev.sh"]
     depends_on:
       - postgres
@@ -15,7 +16,6 @@ services:
     build: ./api
     volumes:
       - ./api:/usr/src/app
-    env_file: env-development
     command: npm run dev
   ui:
     build: ./ui
