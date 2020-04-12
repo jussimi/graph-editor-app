@@ -1,13 +1,14 @@
 version: "3.7"
 services:
   postgres:
+    image: ${CI_REGISTRY_IMAGE-local}/postgres:${CI_COMMIT_SHORT_SHA-latest}
     build: ./database
     env_file: .env
     ports:
       - ${DB_PORT}
   migrate:
     build: ./migrate
-    entrypoint: ["./run.sh"]
+    entrypoint: ["./dev.sh"]
     depends_on:
       - postgres
   api:
