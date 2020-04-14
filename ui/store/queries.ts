@@ -34,7 +34,6 @@ const graphqlQuery = async (
   let data: any;
   let error: any;
   try {
-    console.log('MAKING API CALL', query, url);
     const response = await app.$axios.$post(url, { query, variables }, { headers });
     if (response.errors) {
       error = response.errors[0];

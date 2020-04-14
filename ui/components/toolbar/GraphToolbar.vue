@@ -29,6 +29,8 @@
       </v-btn>
     </v-btn-toggle>
 
+    <HelModal style="float: right;" />
+
     <v-spacer></v-spacer>
 
     <template v-slot:extension align>
@@ -145,12 +147,14 @@ import { Component, Prop, Vue } from 'nuxt-property-decorator';
 
 import ColorInput from './ColorInput.vue';
 import TextInput from './TextInput.vue';
+import HelModal from './HelpModal.vue';
 import { EditorConfig, EditorState, Node, Edge, EditorActions } from '@/types';
 
 @Component({
   components: {
     ColorInput,
     TextInput,
+    HelModal,
   },
 })
 export default class GraphToolbar extends Vue {

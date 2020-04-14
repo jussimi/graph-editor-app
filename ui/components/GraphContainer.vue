@@ -3,6 +3,17 @@
     <GraphToolbar v-bind="{ name: graph.name, config, state, actions, isTrial }" />
     <div class="mx-auto pa-1 transition-swing elevation-2">
       <GraphCanvas ref="graphCanvas" v-bind="{ nodes: graph.nodes, edges: graph.edges, config, state, actions }" />
+      <div style="display: inline-flex; width: 60%;">
+        <v-slider
+          :min="minSize"
+          :max="maxSize"
+          :value="minSize / 2 + maxSize - size"
+          step="10"
+          hide-details
+          dense
+          @input="doZoom(minSize / 2 + maxSize - Number.parseInt($event))"
+        ></v-slider>
+      </div>
     </div>
     <Confirm :open="confirmOpen" :on-cancel="() => (confirmOpen = false)" :on-confirm="deleteGraph" />
   </div>
@@ -16,11 +27,6 @@ import GraphToolbar from './toolbar/GraphToolbar.vue';
 import GraphCanvas from './canvas/GraphCanvas.vue';
 import Confirm from './Confirm.vue';
 import { Graph, Node, Edge, EditorConfig, EditorState, Selected, EditorActions } from '@/types';
-
-// const emptyGraph = () => new Graph({ id: 1111111111 });
-// Graph.nextId = 1;
-
-// TODO: This component should be split up into into smaller pieces.
 
 @Component({
   components: {
@@ -53,6 +59,8 @@ export default class GraphContainer extends Vue {
 
   downloading = false;
 
+  minSize = 600;
+  maxSize = 4000;
   size = 1200;
 
   ratio = 1.6;
@@ -61,6 +69,10 @@ export default class GraphContainer extends Vue {
     type: null,
     value: null,
   };
+
+  doZoom(value: number) {
+    this.size = value;
+  }
 
   get state(): EditorState {
     const { selected, size, ratio, downloading, disabled } = this;
