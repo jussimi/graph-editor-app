@@ -6,9 +6,7 @@
     <h1 v-else>
       {{ otherError }}
     </h1>
-    <NuxtLink to="/">
-      Home page
-    </NuxtLink>
+    <a @click="refresh">Home page</a>
   </v-app>
 </template>
 
@@ -26,6 +24,11 @@ export default {
       pageNotFound: '404 Not Found',
       otherError: 'An error occurred',
     };
+  },
+  methods: {
+    refresh() {
+      window.location.reload();
+    },
   },
   head() {
     const title = this.error.statusCode === 404 ? this.pageNotFound : this.otherError;

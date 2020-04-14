@@ -2,7 +2,7 @@
   <svg
     id="graph-editor-canvas"
     ref="graph"
-    width="100%"
+    width="98%"
     preserveAspectRatio="xMinYMax meet"
     :viewBox="viewBoxString"
     :style="graphStyles"

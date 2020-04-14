@@ -1,16 +1,20 @@
 <template>
   <v-dialog :value="value" persistent max-width="600px">
-    <v-form id="login-and-register-form" ref="form" v-model="valid" lazy-validation @submit.prevent="doAction">
+    <v-form id="remove-account-register-form" ref="form" @submit.prevent="doAction">
       <v-card class="elevation-12">
         <v-toolbar color="primary" dark flat>
-          <v-toolbar-title>{{ title }} form</v-toolbar-title>
+          <v-toolbar-title>Removing account</v-toolbar-title>
           <v-spacer />
         </v-toolbar>
         <v-card-text>
+          <p class="my-0 mx-auto" style="color: red;">
+            Are you sure you want to do this? Removing your account will delete all your data.
+            <br />
+            Please type in your email and password to continue with this action.
+          </p>
           <v-text-field
-            id="form-email-field"
+            id="remove-form-email-field"
             :value="email"
-            :rules="[emailRules]"
             label="Email"
             name="email"
             prepend-icon="mdi-email"
@@ -18,9 +22,8 @@
             @input="setEmail"
           />
           <v-text-field
-            id="form-password-field"
+            id="remove-form-password-field"
             :value="password"
-            :rules="[(v) => (v && v.length > 5) || 'Length must be at least 6 characters']"
             label="Password"
             name="password"
             prepend-icon="mdi-lock"
@@ -33,8 +36,8 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn id="form-cancel-btn" color="primary" @click="$emit('input', false)">Cancel</v-btn>
-          <v-btn id="form-submit-btn" color="primary" type="submit" :loading="loading">{{ type }}</v-btn>
+          <v-btn id="remove-form-cancel-btn" color="primary" @click="$emit('input', false)">Cancel</v-btn>
+          <v-btn id="remove-form-submit-btn" color="primary" type="submit" :loading="loading">Confirm</v-btn>
         </v-card-actions>
       </v-card>
     </v-form>
@@ -45,9 +48,8 @@
 import { Component, Prop, Vue, Watch } from 'nuxt-property-decorator';
 
 @Component
-export default class LoginForm extends Vue {
+export default class RemoveAccountForm extends Vue {
   @Prop(Boolean) value!: boolean;
-  @Prop({ type: String, required: true }) type!: 'login' | 'register';
 
   $refs!: { form: HTMLFormElement };
 
@@ -61,10 +63,6 @@ export default class LoginForm extends Vue {
 
   error = '';
 
-  get title() {
-    return this.type === 'login' ? 'Login' : 'Register';
-  }
-
   setEmail(value: string) {
     this.email = value;
     this.error = '';
@@ -75,30 +73,14 @@ export default class LoginForm extends Vue {
     this.error = '';
   }
 
-  emailRules(value: string | undefined = '') {
-    if (value.length > 0) {
-      const pattern = /\S+@\S+\.\S+/;
-      return pattern.test(value) || 'Invalid e-mail';
-    }
-    return 'Invalid e-mail.';
-  }
-
   async doAction() {
-    await this.$refs.form.validate();
-    if (!this.valid) {
-      return;
-    }
     let success = false;
-    if (this.type === 'register') {
-      this.loading = true;
-      success = await this.$accessor.register({ email: this.email, password: this.password });
-    } else if (this.type === 'login') {
-      this.loading = true;
-      success = await this.$accessor.login({ email: this.email, password: this.password });
-    }
+    this.loading = true;
+    success = await this.$accessor.unRegister({ email: this.email, password: this.password });
     this.loading = false;
     if (success) {
       this.$emit('input', false);
+      this.$emit('success');
     } else {
       this.error = 'Oops, something went wrong. Try Again.';
     }

@@ -106,6 +106,7 @@ export const actions = {
       console.log(error);
     } else if (data?.success) {
       this.app.$accessor.logout(undefined);
+      return true;
     }
     return false;
   },
