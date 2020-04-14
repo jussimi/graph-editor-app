@@ -1,5 +1,5 @@
 <template>
-  <svg class="graph-editor-edge" :class="{ selected: isSelected }">
+  <svg data-cy="graph-editor-edge" :class="{ selected: isSelected }">
     <defs>
       <!-- NOTE: This defines a global-marker for this specific color (color added to id) -->
       <!-- If another Edge has the same color, then this won't be redefined -->

@@ -1,4 +1,5 @@
 import editorPage from '../pages/editor';
+import layoutPage from '../pages/layout';
 
 describe('Graph editor actions', () => {
   before(() => {
@@ -92,7 +93,17 @@ describe('Graph editor actions', () => {
       });
     });
 
-    it('Person can create a graph', () => {
+    it('Person can create a new graph', () => {
+      layoutPage.navbarActivatorIcon.click();
+      layoutPage.navbarCreateGraphLink.should('be.visible').then((btn) => btn.click());
+      cy.location('pathname').should((path) => {
+        const splitPath = path.split('/');
+        expect(path).to.contain('graphs');
+        expect(parseInt(splitPath[splitPath.length - 1])).to.be.greaterThan(110);
+      });
+    });
+
+    it('Person can save a graph', () => {
       editorPage.saveGraphButton.should('be.enabled');
       editorPage.saveGraphButton.click();
       cy.location('pathname').should((path) => {
@@ -134,7 +145,7 @@ describe('Graph editor actions', () => {
       editorPage.modeEditButton.click();
       editorPage.graphDeleteButton.should('be.enabled').click();
       // editorPage.graphDeleteButton.click();
-      cy.get('#confirm-dialog-confirm').click();
+      cy.get('[data-cy=confirm-dialog-confirm]').click();
       cy.location('pathname').should((path) => {
         const splitPath = path.split('/');
         expect(path).to.contain('graphs');
