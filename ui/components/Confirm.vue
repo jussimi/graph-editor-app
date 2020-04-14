@@ -12,11 +12,11 @@
       <v-card-actions>
         <v-spacer></v-spacer>
 
-        <v-btn id="confirm-dialog-cancel" color="green darken-1" text @click="onCancel">
+        <v-btn data-cy="confirm-dialog-cancel" color="green darken-1" text @click="onCancel">
           cancel
         </v-btn>
 
-        <v-btn id="confirm-dialog-confirm" color="green darken-1" text @click="onConfirm">
+        <v-btn data-cy="confirm-dialog-confirm" color="green darken-1" text @click="onConfirm">
           confirm
         </v-btn>
       </v-card-actions>

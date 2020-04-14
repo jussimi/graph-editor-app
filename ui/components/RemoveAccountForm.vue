@@ -1,6 +1,6 @@
 <template>
   <v-dialog :value="value" persistent max-width="600px">
-    <v-form id="remove-account-register-form" ref="form" @submit.prevent="doAction">
+    <v-form ref="form" data-cy="remove-account-form" @submit.prevent="doAction">
       <v-card class="elevation-12">
         <v-toolbar color="primary" dark flat>
           <v-toolbar-title>Removing account</v-toolbar-title>
@@ -13,7 +13,7 @@
             Please type in your email and password to continue with this action.
           </p>
           <v-text-field
-            id="remove-form-email-field"
+            data-cy="form-email-field"
             :value="email"
             label="Email"
             name="email"
@@ -22,7 +22,7 @@
             @input="setEmail"
           />
           <v-text-field
-            id="remove-form-password-field"
+            data-cy="form-password-field"
             :value="password"
             label="Password"
             name="password"
@@ -36,8 +36,8 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn id="remove-form-cancel-btn" color="primary" @click="$emit('input', false)">Cancel</v-btn>
-          <v-btn id="remove-form-submit-btn" color="primary" type="submit" :loading="loading">Confirm</v-btn>
+          <v-btn data-cy="form-cancel-btn" color="primary" @click="$emit('input', false)">Cancel</v-btn>
+          <v-btn data-cy="form-submit-btn" color="primary" type="submit" :loading="loading">Confirm</v-btn>
         </v-card-actions>
       </v-card>
     </v-form>
