@@ -14,12 +14,16 @@ services:
     depends_on:
       - postgres
   api:
-    build: ./api
+    build:
+      context: ./api
+      target: dev
     volumes:
       - ./api:/usr/src/app
     command: npm run dev
   ui:
-    build: ./ui
+    build:
+      context: ./ui
+      target: dev
     volumes:
       - ./ui:/usr/src/app
     command: npm run dev
