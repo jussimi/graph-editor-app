@@ -73,6 +73,7 @@ export default {
         });
       }
     },
+    hardSource: true,
     // analyze: true,
     extractCSS: true,
     terser: {

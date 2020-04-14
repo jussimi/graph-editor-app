@@ -4,7 +4,8 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "start": "tsc && NODE_ENV=production node dist/index.js",
+    "start": "NODE_ENV=production node dist/index.js",
+    "build": "tsc",
     "dev": "concurrently -r \"npm:lint-code:watch\" \"npm:lint-type:watch\" \"npm:dev-init\"",
     "dev-init": "NODE_ENV=development nodemon -w ./src --ext .ts --exec ts-node ./src/index.ts",
     "lint-type": "tsc --noEmit",
