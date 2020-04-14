@@ -7,7 +7,9 @@ cd $SCRIPT_DIR
 SUCCESS=0
 EXIT_CODE=1
 
-COMPOSE=$(echo "docker-compose -f docker-compose.yml -f docker-compose.test.yml -f docker-compose.preview.yml")
+# Run unit tests with the dev-environment.
+COMPOSE=$(echo "docker-compose -f docker-compose.yml -f docker-compose.override.yml")
+
 # Test migrate
 $COMPOSE run --rm --entrypoint ./test.sh migrate run --rm postgres; EXIT_CODE=$?
 if [ $EXIT_CODE != 0 ]; then
@@ -25,7 +27,8 @@ if [ $EXIT_CODE != 0 ]; then
   exit $EXIT_CODE
 fi
 
-# Test end-to-end tests.
+# Run end-to-end tests with the production-preview environment.
+COMPOSE=$(echo "docker-compose -f docker-compose.yml -f docker-compose.test.yml -f docker-compose.preview.yml")
 $COMPOSE up -d postgres migrate api ui
 $COMPOSE run --rm e2e; EXIT_CODE=$?
 if [ $EXIT_CODE != 0 ]; then
