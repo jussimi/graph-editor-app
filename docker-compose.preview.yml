@@ -5,7 +5,7 @@ services:
     build: ./database
     env_file: .env
     ports:
-      - ${DB_PORT}
+      - ${DB_PORT-5432}
   migrate:
     build: ./migrate
     entrypoint: ["./dev.sh"]
