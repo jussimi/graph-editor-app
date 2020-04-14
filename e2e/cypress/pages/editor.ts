@@ -3,40 +3,40 @@ import RootPage from './root';
 class EditorPage extends RootPage {
   // CANVAS
   get graphEditorCanvas() {
-    return cy.get('#graph-editor-canvas');
+    return cy.get('[data-cy=graph-editor-canvas]');
   }
   get graphEditorNodes() {
-    return cy.get('.graph-editor-node');
+    return cy.get('[data-cy=graph-editor-node]');
   }
   get graphEditorEdges() {
-    return cy.get('.graph-editor-edge');
+    return cy.get('[data-cy=graph-editor-edge]');
   }
   get selectedNode() {
-    return cy.get('.graph-editor-node.selected');
+    return this.graphEditorEdges.filter('.selected');
   }
   get selectedEdge() {
-    return cy.get('.graph-editor-edge.selected');
+    return this.graphEditorNodes.filter('.selected');
   }
   // TOOLBAR
   // Mode buttons
   get modeEditButton() {
-    return cy.get('#mode-edit-button');
+    return cy.get('[data-cy=mode-edit-button]');
   }
   get modeNodeButton() {
-    return cy.get('#mode-node-button');
+    return cy.get('[data-cy=mode-node-button]');
   }
   get modeEdgeButton() {
-    return cy.get('#mode-edge-button');
+    return cy.get('[data-cy=mode-edge-button]');
   }
   // Action buttons
   get setLayoutButton() {
-    return cy.get('#set-layout-button');
+    return cy.get('[data-cy=set-layout-button]');
   }
   get saveGraphButton() {
-    return cy.get('#save-graph-button');
+    return cy.get('[data-cy=save-graph-button]');
   }
   get donwloadSvgButton() {
-    return cy.get('#download-svg-button');
+    return cy.get('[data-cy=download-svg-button]');
   }
   // Node inputs and buttons.
   get nodeRadiusField() {

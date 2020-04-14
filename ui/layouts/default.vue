@@ -21,14 +21,20 @@
             </v-list-item-content>
           </template>
 
-          <v-list-item v-for="graph in graphs" :key="graph.id" link :to="`/graphs/${graph.id}`">
+          <v-list-item
+            v-for="graph in graphs"
+            :key="graph.id"
+            data-cy="nav-graph-link"
+            link
+            :to="`/graphs/${graph.id}`"
+          >
             <v-list-item-content>
               <v-list-item-title>{{ graph.name }}</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
         </v-list-group>
 
-        <v-list-item link @click="createGraph">
+        <v-list-item data-cy="nav-create-graph-link" link @click="createGraph">
           <v-list-item-icon>
             <v-icon>mdi-plus-box-multiple</v-icon>
           </v-list-item-icon>
@@ -40,22 +46,33 @@
 
       <template v-slot:append>
         <div class="pa-2">
-          <v-btn block outlined color="indigo" @click="removeAccountModalOpen = true">Remove account</v-btn>
+          <v-btn
+            data-cy="remove-account-modal-activator"
+            block
+            outlined
+            color="indigo"
+            @click="removeAccountModalOpen = true"
+            >Remove account</v-btn
+          >
         </div>
       </template>
     </v-navigation-drawer>
 
     <!-- -->
     <v-app-bar app color="indigo" dark>
-      <v-app-bar-nav-icon v-if="loggedIn" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+      <v-app-bar-nav-icon
+        v-if="loggedIn"
+        data-cy="nav-activator-icon"
+        @click.stop="drawer = !drawer"
+      ></v-app-bar-nav-icon>
       <v-toolbar-title>Graph editor</v-toolbar-title>
       <v-spacer></v-spacer>
       <template v-if="!loggedIn">
-        <v-btn id="login-modal-activator" class="mx-1" @click="openModal('login')">Login</v-btn>
-        <v-btn id="register-modal-activator" @click="openModal('register')">Register</v-btn>
+        <v-btn data-cy="login-modal-activator" class="mx-1" @click="openModal('login')">Login</v-btn>
+        <v-btn data-cy="register-modal-activator" @click="openModal('register')">Register</v-btn>
       </template>
       <template v-else>
-        <v-btn id="logout-button" @click="logout">Logout</v-btn>
+        <v-btn data-cy="logout-button" @click="logout">Logout</v-btn>
       </template>
     </v-app-bar>
 
