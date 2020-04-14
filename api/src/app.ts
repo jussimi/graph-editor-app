@@ -47,9 +47,10 @@ const graphqlInterceptor: RequestHandler = (req, _res, next) => {
 };
 
 // Create a rate limiter for requests.
+const maxRequests = process.env.NODE_ENV === 'development' ? 0 : 100;
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes,
-  max: 100,
+  max: maxRequests,
 });
 
 const logger: RequestHandler = (req, _res, next) => {

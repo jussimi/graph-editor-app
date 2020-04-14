@@ -1,6 +1,6 @@
 <template>
   <v-dialog :value="value" persistent max-width="600px">
-    <v-form id="login-and-register-form" ref="form" v-model="valid" lazy-validation @submit.prevent="doAction">
+    <v-form ref="form" v-model="valid" data-cy="login-and-register-form" lazy-validation @submit.prevent="doAction">
       <v-card class="elevation-12">
         <v-toolbar color="primary" dark flat>
           <v-toolbar-title>{{ title }} form</v-toolbar-title>
@@ -8,7 +8,7 @@
         </v-toolbar>
         <v-card-text>
           <v-text-field
-            id="form-email-field"
+            data-cy="form-email-field"
             :value="email"
             :rules="[emailRules]"
             label="Email"
@@ -18,7 +18,7 @@
             @input="setEmail"
           />
           <v-text-field
-            id="form-password-field"
+            data-cy="form-password-field"
             :value="password"
             :rules="[(v) => (v && v.length > 5) || 'Length must be at least 6 characters']"
             label="Password"
@@ -33,8 +33,8 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn id="form-cancel-btn" color="primary" @click="$emit('input', false)">Cancel</v-btn>
-          <v-btn id="form-submit-btn" color="primary" type="submit" :loading="loading">{{ type }}</v-btn>
+          <v-btn data-cy="form-cancel-btn" color="primary" @click="$emit('input', false)">Cancel</v-btn>
+          <v-btn data-cy="form-submit-btn" color="primary" type="submit" :loading="loading">{{ type }}</v-btn>
         </v-card-actions>
       </v-card>
     </v-form>

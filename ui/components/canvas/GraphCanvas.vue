@@ -1,7 +1,7 @@
 <template>
   <svg
-    id="graph-editor-canvas"
     ref="graph"
+    data-cy="graph-editor-canvas"
     width="98%"
     preserveAspectRatio="xMinYMax meet"
     :viewBox="viewBoxString"

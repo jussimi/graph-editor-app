@@ -1,12 +1,12 @@
 <template>
   <svg
     :key="`node-${node.id}`"
-    class="graph-editor-node"
     :class="{ selected: isSelected }"
     :x="node.x - radius"
     :y="node.y - radius"
     :width="2 * radius"
     :height="2 * radius"
+    data-cy="graph-editor-node"
     @pointerdown.stop="pointerDown"
   >
     <circle v-if="isSelected" :cx="radius" :cy="radius" :r="radius" fill="cyan" :style="styles"></circle>

@@ -7,8 +7,8 @@
     <v-btn-toggle :value="modeButtons.indexOf(config.mode.value)" dense>
       <v-btn
         v-for="(mode, idx) of modeButtons"
-        :id="mode.id"
         :key="idx"
+        :data-cy="mode.cy"
         @click="actions.setConfig({ ...config, mode: mode.value })"
       >
         {{ mode.value }}
@@ -20,8 +20,8 @@
     <v-btn-toggle v-model="actionButton" dense @change="resetActiveButton">
       <v-btn
         v-for="(btn, idx) of actionButtons"
-        :id="btn.id"
         :key="idx"
+        :data-cy="btn.cy"
         :disabled="btn.disabled"
         @click="doAction(btn.action)"
       >
@@ -165,16 +165,16 @@ export default class GraphToolbar extends Vue {
   @Prop({ type: Object, required: true }) config!: EditorConfig;
 
   modeButtons = [
-    { id: 'mode-edit-button', value: 'edit' },
-    { id: 'mode-node-button', value: 'node' },
-    { id: 'mode-edge-button', value: 'edge' },
+    { cy: 'mode-edit-button', value: 'edit' },
+    { cy: 'mode-node-button', value: 'node' },
+    { cy: 'mode-edge-button', value: 'edge' },
   ];
 
   get actionButtons() {
     return [
-      { id: 'set-layout-button', action: 'setLayout', label: 'normalize', disabled: false },
-      { id: 'save-graph-button', action: 'doSave', label: 'save', disabled: this.isTrial },
-      { id: 'download-svg-button', action: 'downloadSvg', label: 'download', disabled: this.isTrial },
+      { cy: 'set-layout-button', action: 'setLayout', label: 'normalize', disabled: false },
+      { cy: 'save-graph-button', action: 'doSave', label: 'save', disabled: this.isTrial },
+      { cy: 'download-svg-button', action: 'downloadSvg', label: 'download', disabled: this.isTrial },
     ];
   }
 
