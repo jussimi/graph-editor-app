@@ -19,6 +19,7 @@ services:
       target: dev
     volumes:
       - ./api:/usr/src/app
+      - /usr/src/app/node_modules
     command: npm run dev
   ui:
     build:
@@ -26,4 +27,5 @@ services:
       target: dev
     volumes:
       - ./ui:/usr/src/app
+      - /usr/src/app/node_modules
     command: npm run dev
