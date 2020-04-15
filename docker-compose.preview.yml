@@ -12,8 +12,12 @@ services:
     depends_on:
       - postgres
   api:
-    build: ./api
+    build:
+      context: ./api
+      target: prod
     command: npm start
   ui:
-    build: ./ui
+    build:
+      context: ./ui
+      target: prod
     command: npm start
