@@ -8,7 +8,7 @@ SUCCESS=0
 EXIT_CODE=1
 
 # Run unit tests with the dev-environment.
-COMPOSE=$(echo "docker-compose -f docker-compose.yml -f docker-compose.override.yml")
+COMPOSE=$(echo "docker-compose -f docker-compose.yml -f docker-compose.test.yml")
 $COMPOSE build
 # Test migrate
 $COMPOSE run --rm --entrypoint ./test.sh migrate run --rm postgres; EXIT_CODE=$?

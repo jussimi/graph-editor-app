@@ -1,5 +1,26 @@
 version: "3.7"
 services:
+  postgres:
+    image: ${CI_REGISTRY_IMAGE-local}/postgres:${CI_COMMIT_SHORT_SHA-latest}
+    build: ./database
+    env_file: .env
+    ports:
+      - ${DB_PORT-5432}
+  migrate:
+    build: ./migrate
+    entrypoint: ["./dev.sh"]
+    depends_on:
+      - postgres
+  api:
+    build:
+      context: ./api
+      target: dev
+    command: npm run dev
+  ui:
+    build:
+      context: ./ui
+      target: dev
+    command: npm run dev
   e2e:
     image: ${CI_REGISTRY_IMAGE-local}/e2e:${CI_COMMIT_SHORT_SHA-latest}
     build: ./e2e
