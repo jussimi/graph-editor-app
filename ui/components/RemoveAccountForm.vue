@@ -30,7 +30,7 @@
             type="password"
             @input="setPassword"
           />
-          <p v-if="error" class="mx-auto my-0" style="color: red;">
+          <p v-if="error" data-cy="form-error-message" class="mx-auto my-0" style="color: red;">
             {{ error }}
           </p>
         </v-card-text>
@@ -73,16 +73,23 @@ export default class RemoveAccountForm extends Vue {
     this.error = '';
   }
 
+  setError(error: string) {
+    if (error.includes('wrong-password')) {
+      this.error = 'The submitted password did not match the email. Try again.';
+    } else {
+      this.error = 'Oops, something went wrong. Try Again.';
+    }
+  }
+
   async doAction() {
-    let success = false;
     this.loading = true;
-    success = await this.$accessor.unRegister({ email: this.email, password: this.password });
+    const { success, error = '' } = await this.$accessor.unRegister({ email: this.email, password: this.password });
     this.loading = false;
     if (success) {
       this.$emit('input', false);
       this.$emit('success');
     } else {
-      this.error = 'Oops, something went wrong. Try Again.';
+      this.setError(error);
     }
   }
 

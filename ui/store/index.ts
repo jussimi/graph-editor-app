@@ -58,8 +58,13 @@ export const mutations = {
   },
 };
 
-export type ActionCtx = ActionContext<RootState, RootState>;
+interface ActionResponse {
+  success: boolean;
+  error?: string;
+}
+
 type StoreState = Store<RootState>;
+export type ActionCtx = ActionContext<RootState, RootState>;
 export const actions = {
   nuxtServerInit(this: StoreState): void {
     // process.env is not available on client side -> save it to store on
@@ -83,7 +88,7 @@ export const actions = {
     this: StoreState,
     _ctx: ActionCtx,
     { email, password }: { email: string; password: string }
-  ): Promise<boolean> {
+  ): Promise<ActionResponse> {
     const { data, error } = await queries.registerPerson(this.app, email, password);
     if (error) {
       console.log(error);
@@ -92,29 +97,29 @@ export const actions = {
       this.app.$cookies.set('authToken', authToken, { sameSite: true });
       await this.app.$accessor.fetchData(undefined);
       this.$router.push('/graphs');
-      return true;
+      return { success: true };
     }
-    return false;
+    return { success: false, error: error?.message };
   },
   async unRegister(
     this: StoreState,
     _ctx: ActionCtx,
     { email, password }: { email: string; password: string }
-  ): Promise<boolean> {
+  ): Promise<ActionResponse> {
     const { data, error } = await queries.removePerson(this.app, email, password);
     if (error) {
       console.log(error);
     } else if (data?.success) {
       this.app.$accessor.logout(undefined);
-      return true;
+      return { success: true };
     }
-    return false;
+    return { success: false, error: error?.message };
   },
   async login(
     this: StoreState,
     _ctx: ActionCtx,
     { email, password }: { email: string; password: string }
-  ): Promise<boolean> {
+  ): Promise<ActionResponse> {
     const { data, error } = await queries.loginPerson(this.app, email, password);
     if (error) {
       console.log(error);
@@ -123,9 +128,9 @@ export const actions = {
       this.app.$cookies.set('authToken', authToken, { sameSite: true });
       await this.app.$accessor.fetchData(undefined);
       this.$router.push('/graphs');
-      return true;
+      return { success: true };
     }
-    return false;
+    return { success: false, error: error?.message };
   },
   async fetchData(this: StoreState, { state }: ActionCtx) {
     const { data, error } = await queries.fetchAllResources(this.app);

@@ -27,7 +27,7 @@
             type="password"
             @input="setPassword"
           />
-          <p v-if="error" class="mx-auto my-0" style="color: red;">
+          <p v-if="error" data-cy="form-error-message" class="mx-auto my-0" style="color: red;">
             {{ error }}
           </p>
         </v-card-text>
@@ -83,24 +83,37 @@ export default class LoginForm extends Vue {
     return 'Invalid e-mail.';
   }
 
+  setError(error: string) {
+    if (error.includes('duplicate key value violates unique constraint "person_email_key"')) {
+      this.error = 'An account for this email already exists. Try to login instead.';
+    } else if (error.includes('wrong-password')) {
+      this.error = 'The submitted password did not match the email. Try again.';
+    } else if (error.includes('person-not-found')) {
+      this.error = 'No account for this email was found. Register instead.';
+    } else {
+      this.error = 'Oops, something went wrong. Try Again.';
+    }
+  }
+
   async doAction() {
     await this.$refs.form.validate();
     if (!this.valid) {
       return;
     }
     let success = false;
+    let error = '';
     if (this.type === 'register') {
       this.loading = true;
-      success = await this.$accessor.register({ email: this.email, password: this.password });
+      ({ success, error = '' } = await this.$accessor.register({ email: this.email, password: this.password }));
     } else if (this.type === 'login') {
       this.loading = true;
-      success = await this.$accessor.login({ email: this.email, password: this.password });
+      ({ success, error = '' } = await this.$accessor.login({ email: this.email, password: this.password }));
     }
     this.loading = false;
     if (success) {
       this.$emit('input', false);
     } else {
-      this.error = 'Oops, something went wrong. Try Again.';
+      this.setError(error);
     }
   }
 
