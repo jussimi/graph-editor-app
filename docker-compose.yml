@@ -2,12 +2,10 @@ version: "3.7"
 services:
   migrate:
     image: ${CI_REGISTRY_IMAGE-local}/migrate:${CI_COMMIT_SHORT_SHA-latest}
-    build: ./migrate
     command: up
     env_file: .env
   api:
     image: ${CI_REGISTRY_IMAGE-local}/api:${CI_COMMIT_SHORT_SHA-latest}
-    build: ./api
     ports:
       - "4000:4000"
     env_file: .env
@@ -16,7 +14,6 @@ services:
       UI_PORT: 3000
   ui:
     image: ${CI_REGISTRY_IMAGE-local}/ui:${CI_COMMIT_SHORT_SHA-latest}
-    build: ./ui
     ports:
       - "3000:3000"
     environment:
