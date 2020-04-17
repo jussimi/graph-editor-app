@@ -19,6 +19,11 @@ This project requires an installation of `docker` and `docker-compose`.
 
 Understanding this project requires a bit of prior experience with docker. It would probably make sense to create some bash-scripts for easier usage.
 
+## System requirements
+This project has been written on a Ubuntu 18.04 laptop with 32gb of memory and an Intel i5-processor. The development environment would probably need at least 2gb of free ram for the whole stack. Also the build-processes might take a while on slower computers.
+
+Running this project on Windows is not wise and will probably not work. It should work on linux-based systems straight out of the box. If using Windows, you can try to run the project on a local linux virtual-machine.
+
 ## CI/CD
 The project uses a gitlab-pipeline that:
   1. builds the docker-images and saves them to a container-registry on gitlab.

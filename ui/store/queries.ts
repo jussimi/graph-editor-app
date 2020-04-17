@@ -32,7 +32,7 @@ const graphqlQuery = async (
     headers.origin = `http://ui:${process.env.PORT}`;
   }
   let data: any;
-  let error: any;
+  let error: Error | undefined;
   try {
     const response = await app.$axios.$post(url, { query, variables }, { headers });
     if (response.errors) {
@@ -53,7 +53,7 @@ const registerPerson = async (app: NuxtAppOptions, email: string, password: stri
   const query = 'registerPerson';
   const variables = { email, password };
   let data: { authToken: string } | undefined;
-  let error: any;
+  let error: Error | undefined;
   const response = await graphqlQuery(app, { query, variables });
   if (response.data) {
     const authToken = response.data.registerPerson?.authToken;
@@ -71,7 +71,7 @@ const loginPerson = async (app: NuxtAppOptions, email: string, password: string)
   const query = 'loginPerson';
   const variables = { email, password };
   let data: { authToken: string } | undefined;
-  let error: any;
+  let error: Error | undefined;
   const response = await graphqlQuery(app, { query, variables });
   if (response.data) {
     const authToken = response.data.authenticate?.authToken;
@@ -89,7 +89,7 @@ const removePerson = async (app: NuxtAppOptions, email: string, password: string
   const query = 'removePerson';
   const variables = { email, password };
   let data: { success: boolean } | undefined;
-  let error: any;
+  let error: Error | undefined;
   const response = await graphqlQuery(app, { query, variables }, true);
   if (response.data?.removePerson) {
     const success = response.data.removePerson.boolean;
@@ -104,7 +104,7 @@ const removePerson = async (app: NuxtAppOptions, email: string, password: string
 const fetchAllResources = async (app: NuxtAppOptions) => {
   const query = 'fetchAllResources';
   let data: { personId: number; email: string; graphs: GraphData[] } | undefined;
-  let error: any;
+  let error: Error | undefined;
   const response = await graphqlQuery(app, { query, variables: {} }, true);
   if (response.data) {
     const person = response.data.allPeople?.nodes?.[0];
@@ -131,9 +131,8 @@ const createGraph = async (app: NuxtAppOptions, personId: number, graph: Graph |
     personId,
     name,
   };
-  console.log(query);
   let data: { graph: GraphData } | undefined;
-  let error: any;
+  let error: Error | undefined;
   const response = await graphqlQuery(app, { query, variables }, true);
   if (response.data) {
     const graph = response.data.createGraph?.graph;
@@ -159,7 +158,7 @@ const updateGraph = async (app: NuxtAppOptions, graph: Graph | GraphData) => {
     name,
   };
   let data: { graph: GraphData } | undefined;
-  let error: any;
+  let error: Error | undefined;
   const response = await graphqlQuery(app, { query, variables }, true);
   if (response.data) {
     const graph = response.data.updateGraphById?.graph;
@@ -180,7 +179,7 @@ const deleteGraph = async (app: NuxtAppOptions, graph: Graph | GraphData) => {
   const query = 'deleteGraphById';
   const variables = { id };
   let data: { success: boolean } | undefined;
-  let error: any;
+  let error: Error | undefined;
   const response = await graphqlQuery(app, { query, variables }, true);
   if (response.data) {
     const graph = response.data.deleteGraphById?.graph;

@@ -45,6 +45,9 @@ class LayoutPage extends RootPage {
   get formSubmitBtn() {
     return cy.get('[data-cy=form-submit-btn]');
   }
+  get formErrorMessage() {
+    return cy.get('[data-cy=form-error-message]');
+  }
 
   // METHODS
   openLoginAndRegistrationForm(type: 'login' | 'register') {
