@@ -12,3 +12,11 @@
 
 ### Running the database
 `docker-compose up postgres --build`
+
+### Browsing the database via psql
+```bash
+# Accessing the postgres-database inside docker
+docker-compose exec postgres psql testdb testuser
+
+# Exit with the command \q
+```
