@@ -1,8 +1,18 @@
 # Graph-editor-app
 #### A dockerized fullstack web-development project using Vue, Express and Postgres.
 
+The app allows users to create graphs and save them to a database. It also allows users to download the created graphs as an svg-image.
+
+![](screencapture.png)
+
 The production version of this app is running on a free-tier Amazon ec2-instance in
-http://3.125.137.206:3000/ . I will take the app down at some point in the near future.
+http://3.125.137.206:3000 . I will take the app down at some point in the near future.
+
+## Quick start
+  1. Clone this repo.
+  1. Install [docker](https://docs.docker.com/get-docker/) and [docker-compose](https://docs.docker.com/compose/install/).
+  2. Run the command `docker-compose up --build` in a terminal.
+  3. Open http://0.0.0.0:3000 in a browser.
 
 ## Services
 This project includes multiple services:
@@ -10,12 +20,10 @@ This project includes multiple services:
   - [api](./api/index.md) is the express-server that handles requests from the ui.
   - [database](./database/index.md) contains a postgres-database used in development and testing. The production database is in AWS.
   - [migrate](./migrate/index.md) is a migration and testing tool for the database.
-  - [e2e](./e2e/index.md) contains end-to-end tests written with `cypress`.
+  - [e2e](./e2e/index.md) contains end-to-end tests written with [cypress](https://www.cypress.io/).
 
 ## Dependencies
-This project requires an installation of `docker` and `docker-compose`.
-  - docker: https://docs.docker.com/get-docker/
-  - docker-compose: https://docs.docker.com/compose/install/
+This project requires an installation of [docker](https://docs.docker.com/get-docker/) and [docker-compose](https://docs.docker.com/compose/install/).
 
 Understanding this project requires a bit of prior experience with docker. It would probably make sense to create some bash-scripts for easier usage.
 
