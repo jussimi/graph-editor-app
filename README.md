@@ -5,8 +5,8 @@ The app allows users to create graphs and save them to a database. It also allow
 
 ![](screencapture.png)
 
-The production version of this app is running on a free-tier Amazon ec2-instance in
-http://3.125.137.206:3000 . I will take the app down at some point in the near future.
+<s>The production version of this app is running on a free-tier Amazon ec2-instance in
+http://3.125.137.206:3000 . I will take the app down at some point in the near future.</s>
 
 ## Quick start
   1. Clone this repo.
