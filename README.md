@@ -1,5 +1,5 @@
 # Graph-editor-app
-#### A dockerized fullstack web-development project using Vue, Express and Postgres.
+#### A dockerized fullstack web-development project using Vue, Express and Postgres and Cypress.
 
 The app allows users to create graphs and save them to a database. It also allows users to download the created graphs as an svg-image.
 

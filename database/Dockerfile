@@ -5,7 +5,7 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 # install pgtap
-RUN git clone git://github.com/theory/pgtap.git \
+RUN git clone https://github.com/theory/pgtap.git \
     && cd pgtap \
     && make \
     && make install
